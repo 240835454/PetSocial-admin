@@ -8,6 +8,9 @@
  */
 
 const mysql = require('mysql');
+const Connection = require('../../connection/index')
+
+const con = new Connection();
 
 
 
@@ -15,40 +18,20 @@ class Encyclopedia {
     constructor() {
 
     }
-    connection() {
-        return mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'root',
-            database: 'pet_miniprogram',
-        })
-    }
-    petTypeList(id) {
-        let connection = this.connection();
+    petTypeList(id, keyWord) {
+        let sql = "select petBreedId,name,icon,firstWord from Encyclopedia where petRaceId='" + id + "' and name like '%" + keyWord + "%'";
         return new Promise((resolve, reject) => {
-            connection.connect();
-            let sql = "select petBreedId,name,icon,firstWord from qita where petRaceId='" + id + "'";
-            connection.query(sql, function (err, result) {
-                if (err) {
-                    reject(err);
-                }
-                resolve(result);
+            con.select(sql).then(res => {
+                resolve(res);
             })
-            connection.end();
         })
     }
     petDetail(id) {
-        let connection = this.connection();
+        let sql = "select * from Encyclopedia where petBreedId='" + id + "'";
         return new Promise((resolve, reject) => {
-            connection.connect();
-            let sql = "select * from qita where petBreedId='" + id + "'";
-            connection.query(sql, function (err, result) {
-                if (err) {
-                    reject(err);
-                }
-                resolve(result);
+            con.select(sql).then(res => {
+                resolve(res);
             })
-            connection.end();
         })
     }
 }
