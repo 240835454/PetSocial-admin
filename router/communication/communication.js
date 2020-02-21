@@ -31,13 +31,13 @@ const changeBgImage = async ctx => {
 
 // 获取社区动态列表
 const getDynamicList = async ctx => {
-    let {index,size} = ctx.request.query;
-    console.log(index,size);
-    await community.getDynamicList(index,size).then(res => {
-        // console.log(res);
-        res = res.sort(function(a,b){ 
+    let {index,size} = ctx.request.query; 
+    console.log(index,size); 
+    await community.getDynamicList(index,size).then(Data => {
+        let res = Data[0]; 
+        res = res.sort(function(a,b){   
             return b.timestamp - a.timestamp;
-        }) 
+        })   
         for(let i of res){
             // console.log(i)
             i.content = JSON.parse(i.content)  
@@ -48,10 +48,11 @@ const getDynamicList = async ctx => {
         ctx.body = {
             code: 1, 
             data: {
+                total: Data[1][0].total,
                 list: [
-                    ...res 
+                    ...res,
                 ]
-            },
+            }, 
             message: ''
         }
     })

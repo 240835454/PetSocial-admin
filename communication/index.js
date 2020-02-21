@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Version: 2.0
+ * @Author: TanXinFeng
+ * @Date: 2020-02-20 12:17:59
+ * @LastEditors  : TanXinFeng
+ * @LastEditTime : 2020-02-20 17:21:31
+ */
 const axios = require('axios');
 const Connection = require('../connection/index')
 const con = new Connection();
@@ -39,16 +47,26 @@ class Community{
             }) 
         })
     }
-
+ 
     // 获取社区动态列表
-    getDynamicList(index,pageSize){
-        return new Promise((resolve,reject) => {
-            // let sql = "select * from comments limit ("+index+"-1)*"+pageSize+","+pageSize+"";
-            let sql = "select * from comments";
+    getDynamicList(index,pageSize){  
+        let p1 = new Promise((resolve,reject) => {
+            let start = (index-1)*pageSize; 
+            // let sql = "select * from comments ORDER BY 'id' DESC limit "+ start +","+pageSize+"";
+            let sql = "select * from comments ORDER BY 'id' DESC";
+            // let sql = "select * from comments"; 
+            con.select(sql).then(res => {
+                // console.log(res);
+                resolve(res);  
+            }) 
+        })
+        let p2 = new Promise((resolve,reject) => {
+            let sql = "select count(*) as total from comments";
             con.select(sql).then(res => {
                 resolve(res);
             })
         })
+        return Promise.all([p1,p2]);
     }
 
     // 点赞
