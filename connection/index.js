@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Version: 2.0
+ * @Author: TanXinFeng
+ * @Date: 2020-01-17 16:09:20
+ * @LastEditors: TanXinFeng
+ * @LastEditTime: 2020-02-24 18:07:52
+ */
 const mysql = require('mysql')
 
 class Connection {
@@ -10,8 +18,8 @@ class Connection {
             password: 'root',
             database: 'pet_miniprogram',
         })
-    }
-    // 新增
+    } 
+    // 新增 
     insert(addSql,addSqlParams) {
         let con = this.connection();
         return new Promise((resolve,reject) => {
@@ -26,8 +34,18 @@ class Connection {
         })
     }
     // 删除
-    delete() {
- 
+    delete(deleteSql) {
+        let con = this.connection();
+        return new Promise((resolve,reject) => {
+            con.connect();
+            con.query(deleteSql,function(err,result){
+                if(err){
+                    reject(err);
+                }
+                resolve(result);
+            })
+            con.end();
+        })
     }
     // 修改
     update(updateSql,updateSqlParams) {

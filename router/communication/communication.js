@@ -33,26 +33,25 @@ const changeBgImage = async ctx => {
 const getDynamicList = async ctx => {
     let {index,size} = ctx.request.query; 
     console.log(index,size); 
-    await community.getDynamicList(index,size).then(Data => {
-        let res = Data[0]; 
-        res = res.sort(function(a,b){   
-            return b.timestamp - a.timestamp;
+    await community.getDynamicList(index,size).then(async Data => {
+        let res = Data[0];  
+        res = res.sort(function(a,b){    
+            return b.timestamp - a.timestamp;  
         })   
-        for(let i of res){
-            // console.log(i)
+        for(const i of res){ 
             i.content = JSON.parse(i.content)  
             i.timestamp = formatTime.timeAgo(i.timestamp)
-            i.likeList = JSON.parse(i.likeList)
-            i.comments = JSON.parse(i.comments) 
+            i.likeList = await community.getLikeList(i.post_id);
+            i.comments = await community.getCommentsList(i.post_id); 
         }
         ctx.body = {
-            code: 1, 
+            code: 1,  
             data: {
                 total: Data[1][0].total,
                 list: [
                     ...res,
                 ]
-            }, 
+            },  
             message: ''
         }
     })
@@ -83,11 +82,27 @@ const postDynamic = async ctx => {
 const isLike = async ctx => {
     let token = ctx.header.authorization;
     let account = verify.decode(token);
-    let {post_id,likeList} = ctx.request.body;
-    await community.isLike(post_id,likeList).then(res => { 
+    let {post_id,uid,avatar,name,post_uid,post_avatar,post_name,post_content,timestamp} = ctx.request.body;
+    await community.isLike(post_id,uid,avatar,name,post_uid,post_avatar,post_name,post_content,timestamp).then(res => { 
         ctx.body = {
             code: 1,
-            data: {
+            data: { 
+                
+            }, 
+            message: ''
+        }
+    })
+}
+ 
+// 评论
+const comments = async ctx => {
+    let token = ctx.header.authorization;
+    let account = verify.decode(token);
+    let {post_id,uid,avatar,name,content,timestamp,to_uid,to_name,to_avatar} = ctx.request.body;
+    await community.comments(post_id,uid,avatar,name,content,timestamp,to_uid,to_name,to_avatar).then(res => {
+        ctx.body = {
+            code: 1, 
+            data: { 
                 
             }, 
             message: ''
@@ -95,17 +110,15 @@ const isLike = async ctx => {
     })
 }
 
-// 评论
-const comments = async ctx => {
-    let token = ctx.header.authorization;
-    let account = verify.decode(token);
-    let {post_id,comments} = ctx.request.body;
-    await community.comments(post_id,comments).then(res => {
+// 取消点赞
+const unLike = async ctx => {
+    let {like_id} = ctx.request.body;
+    await community.unLike(like_id).then(res => {
         ctx.body = {
             code: 1,
             data: {
-                
-            }, 
+
+            },
             message: ''
         }
     })
@@ -126,7 +139,7 @@ const openId = async ctx => {
   }
     
     
-
+ 
 
 
 router.get('/API/token', openId) 
@@ -136,6 +149,7 @@ router.post('/API/Community/postDynamic',postDynamic)
 router.get('/API/Community/dynamic',getDynamicList)
 router.post('/API/Community/like',isLike)
 router.post('/API/Community/comments',comments)
+router.put('/API/Community/like',unLike)
 
  
 module.exports = router;
