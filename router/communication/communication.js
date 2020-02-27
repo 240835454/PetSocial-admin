@@ -25,7 +25,7 @@ const changeBgImage = async ctx => {
 
             },
             message: '修改成功！'
-        }
+        } 
     })
 }
 
@@ -124,6 +124,42 @@ const unLike = async ctx => {
     })
 }
 
+// 获取用户详情
+const getUserDetail = async ctx => {
+    let {uid} = ctx.request.query;
+    await community.getUserDetail(uid).then(res => {
+        ctx.body = {
+            code: 1,
+            data: {
+                ...res[0]
+            },
+            message: ''
+        }
+    })
+}
+
+// 获取用户列表
+const getUserDynamic = async ctx => {
+    let {uid} = ctx.request.query;
+    await community.getUserDynamic(uid).then(async res => {
+        for(const i of res){ 
+            i.content = JSON.parse(i.content)  
+            i.timestamp = formatTime.timeAgo(i.timestamp)
+            i.likeList = await community.getLikeList(i.post_id);
+            i.comments = await community.getCommentsList(i.post_id); 
+        }
+        ctx.body = {
+            code: 1,
+            data: {
+                list: [
+                    ...res
+                ]
+            },
+            message: ''
+        }
+    })
+}
+
 // 获取openId      
 const openId = async ctx => {    
     await token.getOpenId(ctx.request.query.code).then(res => { 
@@ -150,6 +186,8 @@ router.get('/API/Community/dynamic',getDynamicList)
 router.post('/API/Community/like',isLike)
 router.post('/API/Community/comments',comments)
 router.put('/API/Community/like',unLike)
+router.get('/API/Community/userDetail',getUserDetail)
+router.get('/API/Community/userDynamic',getUserDynamic)
 
  
 module.exports = router;

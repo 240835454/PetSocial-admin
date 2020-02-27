@@ -4,7 +4,7 @@
  * @Author: TanXinFeng
  * @Date: 2020-02-20 12:17:59
  * @LastEditors: TanXinFeng
- * @LastEditTime: 2020-02-24 18:04:41
+ * @LastEditTime: 2020-02-26 17:39:59
  */
 const axios = require('axios');
 const Connection = require('../connection/index')
@@ -44,21 +44,21 @@ class Community {
             let params = [account, avatar, name, content, timestamp, "0", '[]', '{"content":[]}']
             con.insert(sql, [params]).then(res => {
                 resolve(res);
-            }) 
+            })
         })
     }
- 
+
     // 获取社区动态列表
     getDynamicList(index, pageSize) {
         let p1 = new Promise((resolve, reject) => {
-            let start = (index - 1) * pageSize; 
-            let sql = "select * from dynamic ORDER BY timestamp DESC limit "+ start +","+pageSize+"";
+            let start = (index - 1) * pageSize;
+            let sql = "select * from dynamic ORDER BY timestamp DESC limit " + start + "," + pageSize + "";
             // let sql = "select * from dynamic ORDER BY timestamp DESC limit 0,10";
             // let sql = "select * from dynamic ORDER BY 'id' DESC";
             // let sql = "select * from comments"; 
-            con.select(sql).then(res => { 
+            con.select(sql).then(res => {
                 // console.log(res);  
-                resolve(res); 
+                resolve(res);
             })
         })
         let p2 = new Promise((resolve, reject) => {
@@ -71,23 +71,23 @@ class Community {
     }
 
     // 点赞
-    isLike(post_id,uid,avatar,name,post_uid,post_avatar,post_name,post_content,timestamp) {
+    isLike(post_id, uid, avatar, name, post_uid, post_avatar, post_name, post_content, timestamp) {
         return new Promise((resolve, reject) => {
             let sql = "insert into likes(post_id,uid,avatar,name,post_uid,post_avatar,post_name,post_content,timestamp) value (?)";
             // let sql = "update User set avatar =? where phoneNumber="+account;
-            let params = [post_id,uid,avatar,name,post_uid,post_avatar,post_name,post_content,timestamp];
+            let params = [post_id, uid, avatar, name, post_uid, post_avatar, post_name, post_content, timestamp];
             con.update(sql, [params]).then(res => {
-                resolve(res); 
-            }) 
-        }) 
-    } 
+                resolve(res);
+            })
+        })
+    }
 
     // 评论
-    comments(post_id, uid, avatar, name, content, timestamp,to_uid,to_name,to_avatar) {
+    comments(post_id, uid, avatar, name, content, timestamp, to_uid, to_name, to_avatar) {
         return new Promise((resolve, reject) => {
             let sql = "insert into comment(post_id,uid,avatar,name,content,timestamp,to_uid,to_name,to_avatar) value (?)";
-            let params = [post_id, uid, avatar, name, content, timestamp,to_uid,to_name,to_avatar];
-            con.update(sql, [params]).then(res => {  
+            let params = [post_id, uid, avatar, name, content, timestamp, to_uid, to_name, to_avatar];
+            con.update(sql, [params]).then(res => {
                 resolve(res);
             })
         })
@@ -96,7 +96,7 @@ class Community {
     // 获取评论列表
     getCommentsList(post_id) {
         return new Promise((resolve, reject) => {
-            let sql = "select uid,avatar,name,content,to_name,to_avatar,to_uid from comment where post_id="+post_id;
+            let sql = "select uid,avatar,name,content,to_name,to_avatar,to_uid from comment where post_id=" + post_id;
             con.select(sql).then(res => {
                 resolve(res);
             })
@@ -104,27 +104,47 @@ class Community {
     }
 
     // 获取点赞列表
-    getLikeList(post_id){
-        return new Promise((resolve,reject) => {
-            let sql ="select like_id,uid,avatar,name from likes where post_id="+post_id;
+    getLikeList(post_id) {
+        return new Promise((resolve, reject) => {
+            let sql = "select like_id,uid,avatar,name from likes where post_id=" + post_id;
             con.select(sql).then(res => {
                 resolve(res);
-            }) 
+            })
         })
     }
 
     // 取消点赞
-    unLike(like_id){
-        return new Promise((resolve,reject) => {
-            let sql = "delete from likes where like_id ="+like_id;
-            con.delete(sql).then(res=>{
+    unLike(like_id) {
+        return new Promise((resolve, reject) => {
+            let sql = "delete from likes where like_id =" + like_id;
+            con.delete(sql).then(res => {
+                resolve(res);
+            })
+        })
+    }
+
+    // 获取用户详情
+    getUserDetail(uid) {
+        return new Promise((resolve, reject) => {
+            let sql = "select * from user where phoneNumber=" + uid;
+            con.select(sql).then(res => {
+                resolve(res);
+            })
+        })
+    }
+
+    // 获取用户动态列表
+    getUserDynamic(uid) {
+        return new Promise((resolve, reject) => {
+            let sql = "select * from dynamic where uid=" + uid; 
+            con.select(sql).then(res => {
                 resolve(res);
             })
         })
     }
 }
 
-    
-    
- 
+
+
+
 module.exports = Community;
