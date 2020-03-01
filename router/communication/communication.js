@@ -38,12 +38,11 @@ const getDynamicList = async ctx => {
         res = res.sort(function(a,b){   
             return b.timestamp - a.timestamp;
         })   
-        for(let i of res){
+        for(let i of res){ 
             // console.log(i)
             i.content = JSON.parse(i.content)  
             i.timestamp = formatTime.timeAgo(i.timestamp)
             i.likeList = JSON.parse(i.likeList)
-            i.comments = JSON.parse(i.comments) 
         }
         ctx.body = {
             code: 1, 
@@ -99,12 +98,27 @@ const isLike = async ctx => {
 const comments = async ctx => {
     let token = ctx.header.authorization;
     let account = verify.decode(token);
-    let {post_id,comments} = ctx.request.body;
-    await community.comments(post_id,comments).then(res => {
+    let {post_id,uid,avatar,name,content,timestamp} = ctx.request.body;
+    await community.comments(post_id,uid,avatar,name,content,timestamp).then(res => {
         ctx.body = {
             code: 1,
             data: {
                 
+            }, 
+            message: ''
+        }
+    })
+}
+
+// 获取评论列表
+const getCommentList = async ctx => {
+    await community.getCommentsList().then(res=>{
+        ctx.body = {
+            code: 1,
+            data: {
+                list:[
+                    ...res
+                ]
             }, 
             message: ''
         }
@@ -136,6 +150,8 @@ router.post('/API/Community/postDynamic',postDynamic)
 router.get('/API/Community/dynamic',getDynamicList)
 router.post('/API/Community/like',isLike)
 router.post('/API/Community/comments',comments)
+router.get('/API/Community/commentsList',getCommentList)
+ 
 
  
 module.exports = router;

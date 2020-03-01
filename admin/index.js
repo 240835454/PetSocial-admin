@@ -46,15 +46,15 @@ app.use(koajwt({
 }).unless({      
   path: [/\/API\/Login\/login/, /\/API\/Login\/register/, /\/API\/Login\/captcha/,/\/API\/Login\/setPassword/,/\/image/]
 }));   
-    
-  
-app.use(bodyParser())  
- 
       
+         
+app.use(bodyParser())        
+  
+       
 app.use(router_login.routes());   //导入登录注册模块路由
-app.use(router_petbnb.routes());   //导入养宠模块路由 
+app.use(router_petbnb.routes());   //导入养宠模块路由  
 app.use(router_user.routes());   //导入个人中心模块路由
-app.use(router_upload.routes()); //导入上传图片模块路由
+app.use(router_upload.routes()); //导入上传图片模块路由 
 app.use(router_community.routes()); //导入社区模块路由
  
 
