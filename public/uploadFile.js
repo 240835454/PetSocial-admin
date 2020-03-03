@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Version: 2.0
+ * @Author: TanXinFeng
+ * @Date: 2020-02-20 12:17:59
+ * @LastEditors: TanXinFeng
+ * @LastEditTime: 2020-02-26 14:17:46
+ */
 const Router = require('koa-router')
 const router = new Router();
 const formidable = require('formidable')
@@ -5,9 +13,9 @@ const path = require('path')
 const fs = require('fs')
 
 
-// 上传图片
+// 上传图片 
 const uploadFile = ctx => {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve,reject) => { 
         let form = new formidable.IncomingForm();
         form.keepExtensions = true;
         let uploadDir = path.join(__dirname, '../static/tmp');
