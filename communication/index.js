@@ -4,7 +4,7 @@
  * @Author: TanXinFeng
  * @Date: 2020-02-20 12:17:59
  * @LastEditors: TanXinFeng
- * @LastEditTime: 2020-03-07 13:21:20
+ * @LastEditTime: 2020-03-07 14:15:38
  */
 const axios = require('axios');
 const Connection = require('../connection/index')
@@ -40,8 +40,8 @@ class Community {
     // 发布动态
     postDynamic(account, avatar, name, content, timestamp) {
         return new Promise((resolve, reject) => {
-            let sql = "insert into dynamic(uid,avatar,name,content,timestamp,islike,likeList,comments) value (?)";
-            let params = [account, avatar, name, content, timestamp, "0", '[]', '{"content":[]}']
+            let sql = "insert into dynamic(uid,avatar,name,content,timestamp,islike) value (?)";
+            let params = [account, avatar, name, content, timestamp, "0"]
             con.insert(sql, [params]).then(res => {
                 resolve(res);
             })
@@ -78,13 +78,8 @@ class Community {
             let params = [post_id, uid, avatar, name, post_uid, post_avatar, post_name, post_content, timestamp];
             con.update(sql, [params]).then(res => {
                 resolve(res);
-<<<<<<< HEAD
-            })
-        }) 
-=======
             }) 
         })
->>>>>>> 2aa73720bed9a28df7c76ba2f135257b2745e155
     }
 
     // 评论

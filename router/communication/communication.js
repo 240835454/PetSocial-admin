@@ -184,13 +184,8 @@ router.put('/API/User/changeBgImage',changeBgImage)
 router.post('/API/Community/postDynamic',postDynamic)
 router.get('/API/Community/dynamic',getDynamicList)
 router.post('/API/Community/like',isLike)
-<<<<<<< HEAD
-router.post('/API/Community/comments',comments)
-router.put('/API/Community/like',unLike) 
-=======
 router.post('/API/Community/commentsList',comments)
 router.put('/API/Community/like',unLike)
->>>>>>> 2aa73720bed9a28df7c76ba2f135257b2745e155
 router.get('/API/Community/userDetail',getUserDetail)
 router.get('/API/Community/userDynamic',getUserDynamic)
 

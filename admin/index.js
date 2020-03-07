@@ -4,15 +4,15 @@
  * @Author: TanXinFeng
  * @Date: 2020-01-13 17:04:54
  * @LastEditors: TanXinFeng
- * @LastEditTime: 2020-02-27 09:44:15
- */ 
+ * @LastEditTime: 2020-03-07 14:00:37
+ */  
 const Koa = require('koa')
 const Router = require('koa-router') 
 const router = new Router();
 const bodyParser = require('koa-bodyparser') 
 const app = new Koa();
-const koajwt = require('koa-jwt')
-const static = require('koa-static') 
+const koajwt = require('koa-jwt') 
+const static = require('koa-static')  
 const path = require('path')
 
 const router_login = require('../router/login/login');
