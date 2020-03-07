@@ -5,9 +5,9 @@
  * @Date: 2020-01-13 17:04:54
  * @LastEditors: TanXinFeng
  * @LastEditTime: 2020-02-27 09:44:15
- */
+ */ 
 const Koa = require('koa')
-const Router = require('koa-router')
+const Router = require('koa-router') 
 const router = new Router();
 const bodyParser = require('koa-bodyparser') 
 const app = new Koa();
@@ -48,16 +48,15 @@ app.use(koajwt({
 })); 
 
 
-app.use(bodyParser())
+app.use(bodyParser())  
 
-http://www.honganxin.com/#/
 app.use(router_login.routes());   //导入登录注册模块路由 
 app.use(router_petbnb.routes());   //导入养宠模块路由  
 app.use(router_user.routes());   //导入个人中心模块路由  
 app.use(router_upload.routes()); //导入上传图片模块路由 
 app.use(router_community.routes()); //导入社区模块路由 
-
-
+    
+ 
 app.use(router.routes()).listen(3000, () => {
   console.log('3000端口已开启');
 })   

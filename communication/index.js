@@ -78,8 +78,13 @@ class Community {
             let params = [post_id, uid, avatar, name, post_uid, post_avatar, post_name, post_content, timestamp];
             con.update(sql, [params]).then(res => {
                 resolve(res);
+<<<<<<< HEAD
             })
         }) 
+=======
+            }) 
+        })
+>>>>>>> 2aa73720bed9a28df7c76ba2f135257b2745e155
     }
 
     // 评论
@@ -147,4 +152,4 @@ class Community {
 
 
 
-module.exports = Community;
+module.exports = Community; 
