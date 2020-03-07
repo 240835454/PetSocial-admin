@@ -35,32 +35,8 @@ app.use((ctx, next) => {
     } else {
       throw err;
     }  
-<<<<<<< HEAD
-  })       
-})        
-       
-app.use(static(path.join(path.dirname(__dirname),'./static')))    
-   
-      
-app.use(koajwt({      
-  secret: 'my_token'          
-}).unless({      
-  path: [/\/API\/Login\/login/, /\/API\/Login\/register/, /\/API\/Login\/captcha/,/\/API\/Login\/setPassword/,/\/image/]
-}));   
-      
-         
-app.use(bodyParser())        
-  
-       
-app.use(router_login.routes());   //导入登录注册模块路由
-app.use(router_petbnb.routes());   //导入养宠模块路由  
-app.use(router_user.routes());   //导入个人中心模块路由
-app.use(router_upload.routes()); //导入上传图片模块路由 
-app.use(router_community.routes()); //导入社区模块路由
-=======
   })
 })
->>>>>>> 963d9d06e7ee9ed5ebfde0903bf99548c0ff6668
  
 app.use(static(path.join(path.dirname(__dirname), './static')))
 
@@ -84,4 +60,4 @@ app.use(router_community.routes()); //导入社区模块路由
 
 app.use(router.routes()).listen(3000, () => {
   console.log('3000端口已开启');
-})  
+})   

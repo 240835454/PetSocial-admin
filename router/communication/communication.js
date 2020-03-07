@@ -38,19 +38,11 @@ const getDynamicList = async ctx => {
         res = res.sort(function(a,b){    
             return b.timestamp - a.timestamp;  
         })   
-<<<<<<< HEAD
-        for(let i of res){ 
-            // console.log(i)
-            i.content = JSON.parse(i.content)  
-            i.timestamp = formatTime.timeAgo(i.timestamp)
-            i.likeList = JSON.parse(i.likeList)
-=======
         for(const i of res){ 
             i.content = JSON.parse(i.content)  
             i.timestamp = formatTime.timeAgo(i.timestamp)
             i.likeList = await community.getLikeList(i.post_id);
             i.comments = await community.getCommentsList(i.post_id); 
->>>>>>> 963d9d06e7ee9ed5ebfde0903bf99548c0ff6668
         }
         ctx.body = {
             code: 1,  
@@ -106,13 +98,8 @@ const isLike = async ctx => {
 const comments = async ctx => {
     let token = ctx.header.authorization;
     let account = verify.decode(token);
-<<<<<<< HEAD
-    let {post_id,uid,avatar,name,content,timestamp} = ctx.request.body;
-    await community.comments(post_id,uid,avatar,name,content,timestamp).then(res => {
-=======
     let {post_id,uid,avatar,name,content,timestamp,to_uid,to_name,to_avatar} = ctx.request.body;
     await community.comments(post_id,uid,avatar,name,content,timestamp,to_uid,to_name,to_avatar).then(res => {
->>>>>>> 963d9d06e7ee9ed5ebfde0903bf99548c0ff6668
         ctx.body = {
             code: 1, 
             data: { 
@@ -123,18 +110,6 @@ const comments = async ctx => {
     })
 }
 
-<<<<<<< HEAD
-// 获取评论列表
-const getCommentList = async ctx => {
-    await community.getCommentsList().then(res=>{
-        ctx.body = {
-            code: 1,
-            data: {
-                list:[
-                    ...res
-                ]
-            }, 
-=======
 // 取消点赞
 const unLike = async ctx => {
     let {like_id} = ctx.request.body;
@@ -180,7 +155,6 @@ const getUserDynamic = async ctx => {
                     ...res
                 ]
             },
->>>>>>> 963d9d06e7ee9ed5ebfde0903bf99548c0ff6668
             message: ''
         }
     })
@@ -211,14 +185,9 @@ router.post('/API/Community/postDynamic',postDynamic)
 router.get('/API/Community/dynamic',getDynamicList)
 router.post('/API/Community/like',isLike)
 router.post('/API/Community/comments',comments)
-<<<<<<< HEAD
-router.get('/API/Community/commentsList',getCommentList)
- 
-=======
-router.put('/API/Community/like',unLike)
+router.put('/API/Community/like',unLike) 
 router.get('/API/Community/userDetail',getUserDetail)
 router.get('/API/Community/userDynamic',getUserDynamic)
->>>>>>> 963d9d06e7ee9ed5ebfde0903bf99548c0ff6668
 
  
 module.exports = router;
