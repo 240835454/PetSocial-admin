@@ -1,0 +1,446 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>PTcheck论文检测报告</title>
+		<link rel="stylesheet" href="../css/base.css" />
+		<style type="text/css">
+		a {
+    color: #0796fe;
+}
+a:hover{
+    color:#0796fe!important;
+}
+			.mainContainer {
+				padding: 20px;
+	
+			}
+			
+			.navigation span {
+				display: inline-block;
+				padding-left: 5px;
+				padding-right: 5px;
+				color: #666;
+			}
+			
+			.btn_gray {
+				border: solid 1px #dddddd;
+				background-color: #eeeeee;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+			
+			.btn_gray:hover,
+			.btn_blue {
+				background-color: #0099ff;
+				border: solid 1px #0099ff;
+				color: #fff!important;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+			.para{
+				padding-top:20px;
+			}
+			
+			.duanluo{
+				padding-left:20px;
+				
+				padding-bottom: 5px;
+			}
+			.duanluo span{
+				display: inline-block;
+				padding-left:5px;
+				padding-right: 5px;
+				border: solid 1px #999;
+				color:#999;
+			}
+			.l{
+				line-height: 20px;
+				padding-bottom: 5px;
+			}
+			.l span{
+				color:#333;
+			}
+			.mymodify{
+				font-size:12px;
+			}
+			.mymodify textarea{
+				width:98%;
+				height:100px;
+				color:#333;
+				clear:both;
+			}
+			textarea{
+				padding:10px;
+				line-height: 20px;
+			}
+		</style>
+		<script type="text/javascript">
+
+        var isstorage=false;
+        var danhao;
+        var result= new Array();
+         function trimStr(str) {
+
+            if ((typeof (str) != "string") || !str) {
+
+                return "";
+
+            }
+
+            return str.replace(/(^\s*)|(\s*$)/g, "");
+
+        }
+          
+        function myclick() {
+            window.parent.parent.ViewMain.window.location.href = "../../htmls/jianchong_.htm";
+        }
+        function submitPart(obj, target) {
+            var parent = target.parentNode;
+            if(parent.getAttribute("data")=="add"){
+              var mynext = parent.nextSibling;
+              parent.setAttribute("data","remove");
+              parent.parentNode.removeChild(mynext);
+            }
+            else{
+            	parent.setAttribute("data","add");
+            	var temphtml = document.createElement("div");
+                temphtml.innerHTML = "<input type=\"hidden\" value=\""+ parent.getAttribute("paraseq") +"\"><div name=\"mymodify\" class=\"mymodify\" >"
+					+"<div class=\"a999\">改重内容（请对本句修改之后，点击“临时保存”，然后进入报告左侧“修改文档”页面中获取修改后的内容）：</div>"
+					+"<div><textarea>"+obj
+					+"</textarea>"
+					+"</div>"
+					+"<div align=\"right\" class=\"a999\" style=\"margin-top:14px;\">（注意：改完请及时到“修改文档”复制到原文）<span class=\"btn-gray btn a333\" onclick=\"mysave(this)\">临时保存</span></div>"
+				+"</div>";
+            	   parent.parentNode.insertBefore(temphtml, null);
+            }
+
+        }
+
+		function myNavigate(){
+		 document.getElementById("a_url").click();
+		}
+       
+        function mysave(target) {
+            var tempsen = trimStr(target.parentNode.previousSibling.lastChild.value.replace(/\"/g,"\\\"").replace(/\'/g,"\\\'"));
+            var paraseq = target.parentNode.parentNode.parentNode.firstChild.value;            
+            var mydiv = target.parentNode.parentNode.parentNode.previousSibling;
+             if (mydiv.nodeName == "#text") {
+                mydiv = mydiv.previousSibling;
+            }
+             
+            mydiv.lastChild.setAttribute("onclick", "submitPart('" + tempsen + "',this)");
+           mydiv.setAttribute("data","remove");
+           if (mydiv.firstChild.innerHTML != "已修改") {
+                var xiugai = document.createElement("span");
+                xiugai.setAttribute("style", "font-size:12px;color:#00AEAE;margin-right:10px;");
+                xiugai.innerHTML = "已修改";
+                mydiv.insertBefore(xiugai, mydiv.lastChild);
+               }
+            
+            var parent = target.parentNode.parentNode.parentNode;
+            parent.parentNode.removeChild(parent);
+            if(!isstorage)
+            {
+            window.parent.parent.parent.myset(paraseq, tempsen);
+            }
+            else
+            {
+            myset(paraseq, tempsen);
+            }
+        }
+        window.onload = function() {
+            danhao = document.getElementById("danhao").value;
+            if (window.localStorage) {
+                isstorage = true;
+            }
+            if (!isstorage) {
+                result = window.parent.parent.parent.modifyPara;
+                
+            }
+            else {
+                var temp = localStorage.getItem(danhao);
+                if (temp) {
+                    result = eval("(" + temp + ")");
+                }
+            }
+            if (result) {
+            	
+                for (var i = 0; i < result.length; i++) {
+                	
+                    //var all = $(":hidden");
+                    var all = getClass("div","modify");
+                   
+                    for (var j = 0; j < all.length; j++) {
+                        if (all[j].getAttribute("paraseq") == result[i].para) {
+                        	
+                            var xiugai = document.createElement("span");
+                            xiugai.setAttribute("style", "font-size:12px;color:#00AEAE;margin-right:10px;");
+                            xiugai.innerHTML = "已修改";
+                            all[j].insertBefore(xiugai, all[j].lastChild);
+                            all[j].lastChild.setAttribute("onclick", "submitPart('" + result[i].text.replace(/\"/g,"\\\"").replace(/\'/g,"\\\'") + "',this)");
+                        }
+                    }
+
+                }
+            }  
+        }
+
+
+        function mydivclick(e,obj) {
+            if (e.target.tagName.toUpperCase() != "INPUT") {
+                obj.lastChild.previousSibling.click();
+            }
+        }
+
+        function getClass(tagname, className) { //tagname指元素，className指class的值
+            var tagname = document.getElementsByTagName(tagname);  //获取指定元素
+            var tagnameAll = [];     //这个数组用于存储所有符合条件的元素
+            for (var i = 0; i < tagname.length; i++) {     //遍历获得的元素
+                if (tagname[i].className == className) {     //如果获得的元素中的class的值等于指定的类名，就赋值给tagnameAll
+                    tagnameAll[tagnameAll.length] = tagname[i];
+                }
+            }
+            return tagnameAll;
+
+        }
+
+       
+        
+        
+         function myset(paraseq, sen) {
+         	
+            var reg = new RegExp("\"", "g")
+            var model = "{\"para\":\"" + paraseq + "\",\"text\": \"" + sen + "\"}";
+            var mo = eval("(" + model + ")");
+            var exist = false;
+            for (var i = 0; i < result.length; i++) {
+                if (mo.para == result[i].para) {
+                    exist = true;
+                    result[i].text = mo.text;
+                }
+            }
+            if (!exist) {
+                result.push(mo);
+            }
+            localStorage.removeItem(danhao);
+            localStorage.setItem(danhao, json_encode(result));
+        }
+        
+        function json_decode(str_json) {
+            // Decodes the JSON representation into a PHP value  
+            //  
+            // version: 906.1806  
+            // discuss at: http://phpjs.org/functions/json_decode  
+            // +      original by: Public Domain (http://www.json.org/json2.js)  
+            // + reimplemented by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)  
+            // + improved by: T.J. Leahy  
+            // *     example 1: json_decode('[\n    "e",\n    {\n    "pluribus": "unum"\n}\n]');  
+            // *     returns 1: ['e', {pluribus: 'unum'}]  
+            /* 
+            http://www.JSON.org/json2.js 
+            2008-11-19 
+            Public Domain. 
+            NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK. 
+            See http://www.JSON.org/js.html 
+            */
+
+            var json = this.window.JSON;
+            if (typeof json === 'object' && typeof json.parse === 'function') {
+                return json.parse(str_json);
+            }
+
+            var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+            var j;
+            var text = str_json;
+
+            // Parsing happens in four stages. In the first stage, we replace certain  
+            // Unicode characters with escape sequences. JavaScript handles many characters  
+            // incorrectly, either silently deleting them, or treating them as line endings.  
+            cx.lastIndex = 0;
+            if (cx.test(text)) {
+                text = text.replace(cx, function(a) {
+                    return '\\u' +
+            ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+                });
+            }
+
+            // In the second stage, we run the text against regular expressions that look  
+            // for non-JSON patterns. We are especially concerned with '()' and 'new'  
+            // because they can cause invocation, and '=' because it can cause mutation.  
+            // But just to be safe, we want to reject all unexpected forms.  
+
+            // We split the second stage into 4 regexp operations in order to work around  
+            // crippling inefficiencies in IE's and Safari's regexp engines. First we  
+            // replace the JSON backslash pairs with '@' (a non-JSON character). Second, we  
+            // replace all simple value tokens with ']' characters. Third, we delete all  
+            // open brackets that follow a colon or comma or that begin the text. Finally,  
+            // we look to see that the remaining characters are only whitespace or ']' or  
+            // ',' or ':' or '{' or '}'. If that is so, then the text is safe for eval.  
+            if (/^[\],:{}\s]*$/.
+        test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@').
+            replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+            replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+
+                // In the third stage we use the eval function to compile the text into a  
+                // JavaScript structure. The '{' operator is subject to a syntactic ambiguity  
+                // in JavaScript: it can begin a block or an object literal. We wrap the text  
+                // in parens to eliminate the ambiguity.  
+
+                j = eval('(' + text + ')');
+
+                return j;
+            }
+
+            // If the text is not JSON parseable, then a SyntaxError is thrown.  
+            throw new SyntaxError('json_decode');
+        }
+
+        function json_encode(mixed_val) {
+            // Returns the JSON representation of a value  
+            //  
+            // version: 906.1806  
+            // discuss at: http://phpjs.org/functions/json_encode  
+            // +      original by: Public Domain (http://www.json.org/json2.js)  
+            // + reimplemented by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)  
+            // + improved by: T.J. Leahy  
+            // *     example 1: json_encode(['e', {pluribus: 'unum'}]);  
+            // *     returns 1: '[\n    "e",\n    {\n    "pluribus": "unum"\n}\n]'  
+            /* 
+            http://www.JSON.org/json2.js 
+            2008-11-19 
+            Public Domain. 
+            NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK. 
+            See http://www.JSON.org/js.html 
+            */
+            var json = this.window.JSON;
+            if (typeof json === 'object' && typeof json.stringify === 'function') {
+                return json.stringify(mixed_val);
+            }
+
+            var value = mixed_val;
+
+            var quote = function(string) {
+                var escapable = /[\\\"\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+                var meta = {    // table of character substitutions  
+                    '\b': '\\b',
+                    '\t': '\\t',
+                    '\n': '\\n',
+                    '\f': '\\f',
+                    '\r': '\\r',
+                    '"': '\\"',
+                    '\\': '\\\\'
+                };
+
+                escapable.lastIndex = 0;
+                return escapable.test(string) ?
+        '"' + string.replace(escapable, function(a) {
+            var c = meta[a];
+            return typeof c === 'string' ? c :
+            '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+        }) + '"' :
+        '"' + string + '"';
+            };
+
+            var str = function(key, holder) {
+                var gap = '';
+                var indent = '    ';
+                var i = 0;          // The loop counter.  
+                var k = '';          // The member key.  
+                var v = '';          // The member value.  
+                var length = 0;
+                var mind = gap;
+                var partial = [];
+                var value = holder[key];
+
+                // If the value has a toJSON method, call it to obtain a replacement value.  
+                if (value && typeof value === 'object' &&
+            typeof value.toJSON === 'function') {
+                    value = value.toJSON(key);
+                }
+
+                // What happens next depends on the value's type.  
+                switch (typeof value) {
+                    case 'string':
+                        return quote(value);
+
+                    case 'number':
+                        // JSON numbers must be finite. Encode non-finite numbers as null.  
+                        return isFinite(value) ? String(value) : 'null';
+
+                    case 'boolean':
+                    case 'null':
+                        // If the value is a boolean or null, convert it to a string. Note:  
+                        // typeof null does not produce 'null'. The case is included here in  
+                        // the remote chance that this gets fixed someday.  
+
+                        return String(value);
+
+                    case 'object':
+                        // If the type is 'object', we might be dealing with an object or an array or  
+                        // null.  
+                        // Due to a specification blunder in ECMAScript, typeof null is 'object',  
+                        // so watch out for that case.  
+                        if (!value) {
+                            return 'null';
+                        }
+
+                        // Make an array to hold the partial results of stringifying this object value.  
+                        gap += indent;
+                        partial = [];
+
+                        // Is the value an array?  
+                        if (Object.prototype.toString.apply(value) === '[object Array]') {
+                            // The value is an array. Stringify every element. Use null as a placeholder  
+                            // for non-JSON values.  
+
+                            length = value.length;
+                            for (i = 0; i < length; i += 1) {
+                                partial[i] = str(i, value) || 'null';
+                            }
+
+                            // Join all of the elements together, separated with commas, and wrap them in  
+                            // brackets.  
+                            v = partial.length === 0 ? '[]' :
+                    gap ? '[\n' + gap +
+                    partial.join(',\n' + gap) + '\n' +
+                    mind + ']' :
+                    '[' + partial.join(',') + ']';
+                            gap = mind;
+                            return v;
+                        }
+
+                        // Iterate through all of the keys in the object.  
+                        for (k in value) {
+                            if (Object.hasOwnProperty.call(value, k)) {
+                                v = str(k, value);
+                                if (v) {
+                                    partial.push(quote(k) + (gap ? ': ' : ':') + v);
+                                }
+                            }
+                        }
+
+                        // Join all of the member texts together, separated with commas,  
+                        // and wrap them in braces.  
+                        v = partial.length === 0 ? '{}' :
+                gap ? '{\n' + gap + partial.join(',\n' + gap) + '\n' +
+                mind + '}' : '{' + partial.join(',') + '}';
+                        gap = mind;
+                        return v;
+                }
+            };
+
+            // Make a fake root object containing our value under the key of ''.  
+            // Return the result of stringifying the value.  
+            return str('', {
+                '': value
+            });
+        } 
+       
+    </script>
+	</head>
+
+	<body><a href="http://www.ptcheck.com/tea/segment.aspx" target="_blank" id="a_url" style="display:none;" ></a> <input type="hidden" id="danhao" value="883132417351042241" /><div class="mainContainer"><div align="center" class="navigation"><a href="paper_1.htm"><span class="btn_gray">首页</span></a><a  href="paper_1.htm"><span class="btn_gray">上一页</span></a><a href="#"><span class="btn_gray">下一页</span></a><a href="paper_2.htm">	<span class="btn_gray">尾页</span></a><span>页码：2/2页</span></div><div class="zhengwen"><div class="para"><div class="duanluo"><span>112</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/242.htm" target="right" class="orange">宠物基本信息包括品种，年龄，性别，头像，是否绝育等基本信息。</a><span >用户可以添加并修改宠物基本信息。 </span></div><div class="modify" align="right" paraseq="111"><span class="btn btn-blue" onclick="submitPart('宠物基本信息包括品种，年龄，性别，头像，是否绝育等基本信息。用户可以添加并修改宠物基本信息。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>113</span></div><div class="l"><span style="margin-left:25px"></span><span >(4)社区动态模块 </span></div></div><div class="para"><div class="duanluo"><span>114</span></div><div class="l"><span style="margin-left:25px"></span><span >用户可以在社区发表动态，动态内容可以是文字，图片和视频，发布后的动态对所有人可见，其他用户可以对动态进行评论和点赞，用户可以关注其他用户。 </span></div><div class="modify" align="right" paraseq="113"><span class="btn btn-blue" onclick="submitPart('用户可以在社区发表动态，动态内容可以是文字，图片和视频，发布后的动态对所有人可见，其他用户可以对动态进行评论和点赞，用户可以关注其他用户。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>115</span></div><div class="l"><span style="margin-left:25px"></span><span >(5)聊天模块 </span></div></div><div class="para"><div class="duanluo"><span>116</span></div><div class="l"><span style="margin-left:25px"></span><span >用户与用户之间可以进行实时聊天，聊天内容可以是文字，也可以是图片。 </span></div><div class="modify" align="right" paraseq="115"><span class="btn btn-blue" onclick="submitPart('用户与用户之间可以进行实时聊天，聊天内容可以是文字，也可以是图片。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>117</span></div><div class="l"><span style="margin-left:25px"></span><span >(6)宠物相关服务模块 </span></div></div><div class="para"><div class="duanluo"><span>118</span></div><div class="l"><span style="margin-left:25px"></span><span >在养宠界面，设置了宠物百科，宠物知识文章介绍，宠物花销记事本等模块，开放用户定位服务，可以实时查询地图。 </span></div><div class="modify" align="right" paraseq="117"><span class="btn btn-blue" onclick="submitPart('在养宠界面，设置了宠物百科，宠物知识文章介绍，宠物花销记事本等模块，开放用户定位服务，可以实时查询地图。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>119</span></div><div class="l"><span style="margin-left:25px"></span><span >4.5 系统数据库设计 </span></div></div><div class="para"><div class="duanluo"><span>120</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/251.htm" target="right" class="red">数据库是按照数据结构来组织、存储和管理数据的仓库。</a><span >经过对宠物社交平台系统的需求分析和功能模块设计之后，可以对宠物社交平台系统概念模型抽象出用户、宠物、动态，评论等等实体。 </span><span >其中用户实体的E-R图如图4.5所示，一个用户实体主要包括账号，密码，性别，地区，昵称，头像等。 </span></div><div class="modify" align="right" paraseq="119"><span class="btn btn-blue" onclick="submitPart('数据库是按照数据结构来组织、存储和管理数据的仓库。经过对宠物社交平台系统的需求分析和功能模块设计之后，可以对宠物社交平台系统概念模型抽象出用户、宠物、动态，评论等等实体。其中用户实体的E-R图如图4.5所示，一个用户实体主要包括账号，密码，性别，地区，昵称，头像等。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>121</span></div><div class="l"><span style="margin-left:25px"></span><span >宠物实体主要包括昵称昵称，性别，出生日期，品种，绝育状态，头像等基础属性，宠物实体的E-R图如图4.6所示： </span></div><div class="modify" align="right" paraseq="120"><span class="btn btn-blue" onclick="submitPart('宠物实体主要包括昵称昵称，性别，出生日期，品种，绝育状态，头像等基础属性，宠物实体的E-R图如图4.6所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>122</span></div><div class="l"><span style="margin-left:25px"></span><span >图4.6宠物实体关系图 </span></div></div><div class="para"><div class="duanluo"><span>123</span></div><div class="l"><span style="margin-left:25px"></span><span >动态实体主要包括发布用户账号，发布用户头像，发布用户昵称，动态内容，发布时间等基础属性，动态实体的E-R图如图4.7所示： </span></div><div class="modify" align="right" paraseq="122"><span class="btn btn-blue" onclick="submitPart('动态实体主要包括发布用户账号，发布用户头像，发布用户昵称，动态内容，发布时间等基础属性，动态实体的E-R图如图4.7所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>124</span></div><div class="l"><span style="margin-left:25px"></span><span >图4.7动态实体关系图 </span></div></div><div class="para"><div class="duanluo"><span>125</span></div><div class="l"><span style="margin-left:25px"></span><span >评论实体主要包括评论用户账户，评论用户头像，评论用户昵称，评论内容，评论时间，回复用户账户，回复用户头像，回复用户昵称等基础属性, </span><a href="../sentence_detail/259.htm" target="right" class="red">评论实体的E-R图如图4.8所示：</a></div><div class="modify" align="right" paraseq="124"><span class="btn btn-blue" onclick="submitPart('评论实体主要包括评论用户账户，评论用户头像，评论用户昵称，评论内容，评论时间，回复用户账户，回复用户头像，回复用户昵称等基础属性,评论实体的E-R图如图4.8所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>126</span></div><div class="l"><span style="margin-left:25px"></span><span >图4-8评论实体关系图 </span></div></div><div class="para"><div class="duanluo"><span>127</span></div><div class="l"><span style="margin-left:25px"></span><span >根据概念结构设计中用户实体，宠物实体，动态实体，评论实体等实体以及各个实体之间的操作设计出了本系统的数据库表， </span><span >以下是对关键数据库表中的宠物表、用户表、动态表、评论表，聊天内容表的详细介绍。 </span></div><div class="modify" align="right" paraseq="126"><span class="btn btn-blue" onclick="submitPart('根据概念结构设计中用户实体，宠物实体，动态实体，评论实体等实体以及各个实体之间的操作设计出了本系统的数据库表，以下是对关键数据库表中的宠物表、用户表、动态表、评论表，聊天内容表的详细介绍。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>128</span></div><div class="l"><span style="margin-left:25px"></span><span >表4.1  用户表 </span></div></div><div class="para"><div class="duanluo"><span>129</span></div><div class="l"><span style="margin-left:25px"></span><span >字段名	字段类型	说明	约束 </span></div></div><div class="para"><div class="duanluo"><span>130</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/265.htm" target="right" class="red">phoneNumber	varchar	用户账户	主键,不能为空</a></div></div><div class="para"><div class="duanluo"><span>131</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/266.htm" target="right" class="orange">password	varchar	用户密码	</a></div></div><div class="para"><div class="duanluo"><span>132</span></div><div class="l"><span style="margin-left:25px"></span><span >gender	varchar	用户性别	 </span></div></div><div class="para"><div class="duanluo"><span>133</span></div><div class="l"><span style="margin-left:25px"></span><span >name	varchar	用户昵称	 </span></div></div><div class="para"><div class="duanluo"><span>134</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/269.htm" target="right" class="red">avatar	varchar	用户头像	</a></div></div><div class="para"><div class="duanluo"><span>135</span></div><div class="l"><span style="margin-left:25px"></span><span >region	varchar	用户地区	 </span></div></div><div class="para"><div class="duanluo"><span>136</span></div><div class="l"><span style="margin-left:25px"></span><span >bgImage	varchar	背景图片	 </span></div></div><div class="para"><div class="duanluo"><span>137</span></div><div class="l"><span style="margin-left:25px"></span><span >表4.2  宠物表 </span></div></div><div class="para"><div class="duanluo"><span>138</span></div><div class="l"><span style="margin-left:25px"></span><span >字段名	字段类型	说明	约束 </span></div></div><div class="para"><div class="duanluo"><span>139</span></div><div class="l"><span style="margin-left:25px"></span><span >pid	int	宠物ID	主键,不能为空 </span></div></div><div class="para"><div class="duanluo"><span>140</span></div><div class="l"><span style="margin-left:25px"></span><span >uid	int	用户ID	 </span></div></div><div class="para"><div class="duanluo"><span>141</span></div><div class="l"><span style="margin-left:25px"></span><span >name	varchar	宠物昵称	 </span></div></div><div class="para"><div class="duanluo"><span>142</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/277.htm" target="right" class="red">gender	varchar	宠物性别	</a></div></div><div class="para"><div class="duanluo"><span>143</span></div><div class="l"><span style="margin-left:25px"></span><span >birthDay	varchar	宠物生日	 </span></div></div><div class="para"><div class="duanluo"><span>144</span></div><div class="l"><span style="margin-left:25px"></span><span >avatar	varchar	宠物头像	 </span></div></div><div class="para"><div class="duanluo"><span>145</span></div><div class="l"><span style="margin-left:25px"></span><span >breed	varchar	宠物品种	 </span></div></div><div class="para"><div class="duanluo"><span>146</span></div><div class="l"><span style="margin-left:25px"></span><span >state	int	是否	 </span></div></div><div class="para"><div class="duanluo"><span>147</span></div><div class="l"><span style="margin-left:25px"></span><span >表4.3  动态表 </span></div></div><div class="para"><div class="duanluo"><span>148</span></div><div class="l"><span style="margin-left:25px"></span><span >字段名	字段类型	说明	约束 </span></div></div><div class="para"><div class="duanluo"><span>149</span></div><div class="l"><span style="margin-left:25px"></span><span >post_id	int	动态ID	主键,不能为空 </span></div></div><div class="para"><div class="duanluo"><span>150</span></div><div class="l"><span style="margin-left:25px"></span><span >uid	varchar	用户ID	 </span></div></div><div class="para"><div class="duanluo"><span>151</span></div><div class="l"><span style="margin-left:25px"></span><span >name	varchar	用户昵称	 </span></div></div><div class="para"><div class="duanluo"><span>152</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/287.htm" target="right" class="red">avatar	varchar	用户头像	</a></div></div><div class="para"><div class="duanluo"><span>153</span></div><div class="l"><span style="margin-left:25px"></span><span >content	mediumtext	动态内容	 </span></div></div><div class="para"><div class="duanluo"><span>154</span></div><div class="l"><span style="margin-left:25px"></span><span >islike	varchar	点赞数	 </span></div></div><div class="para"><div class="duanluo"><span>155</span></div><div class="l"><span style="margin-left:25px"></span><span >timestamp	varchar	发布时间	 </span></div></div><div class="para"><div class="duanluo"><span>156</span></div><div class="l"><span style="margin-left:25px"></span><span >表4.4  评论表 </span></div></div><div class="para"><div class="duanluo"><span>157</span></div><div class="l"><span style="margin-left:25px"></span><span >字段名	字段类型	说明	约束 </span></div></div><div class="para"><div class="duanluo"><span>158</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/293.htm" target="right" class="orange">comment_id	int	评论ID	主键,不能为空</a></div></div><div class="para"><div class="duanluo"><span>159</span></div><div class="l"><span style="margin-left:25px"></span><span >post_id	int	动态ID	 </span></div></div><div class="para"><div class="duanluo"><span>160</span></div><div class="l"><span style="margin-left:25px"></span><span >uid	varchar	用户ID	 </span></div></div><div class="para"><div class="duanluo"><span>161</span></div><div class="l"><span style="margin-left:25px"></span><span >avatar	varchar	评论用户头像	 </span></div></div><div class="para"><div class="duanluo"><span>162</span></div><div class="l"><span style="margin-left:25px"></span><span >name	varchar	评论用户昵称	 </span></div></div><div class="para"><div class="duanluo"><span>163</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/298.htm" target="right" class="red">content	varchar	评论内容	</a></div></div><div class="para"><div class="duanluo"><span>164</span></div><div class="l"><span style="margin-left:25px"></span><span >timestamp	varchar	评论时间	 </span></div></div><div class="para"><div class="duanluo"><span>165</span></div><div class="l"><span style="margin-left:25px"></span><span >to_uid	varchar	回复用户ID	 </span></div></div><div class="para"><div class="duanluo"><span>166</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/301.htm" target="right" class="orange">to_avatar	varchar	回复用户头像	</a></div></div><div class="para"><div class="duanluo"><span>167</span></div><div class="l"><span style="margin-left:25px"></span><span >to_name	varchar	回复用户昵称	 </span></div></div><div class="para"><div class="duanluo"><span>168</span></div><div class="l"><span style="margin-left:25px"></span><span >表4.5  聊天内容表 </span></div></div><div class="para"><div class="duanluo"><span>169</span></div><div class="l"><span style="margin-left:25px"></span><span >字段名	字段类型	说明	约束 </span></div></div><div class="para"><div class="duanluo"><span>170</span></div><div class="l"><span style="margin-left:25px"></span><span >m_id	int	消息ID	主键,不能为空 </span></div></div><div class="para"><div class="duanluo"><span>171</span></div><div class="l"><span style="margin-left:25px"></span><span >send_id	int	发送用户ID	 </span></div></div><div class="para"><div class="duanluo"><span>172</span></div><div class="l"><span style="margin-left:25px"></span><span >rec_id	int	接收用户ID	 </span></div></div><div class="para"><div class="duanluo"><span>173</span></div><div class="l"><span style="margin-left:25px"></span><span >content	varchar	聊天内容	 </span></div></div><div class="para"><div class="duanluo"><span>174</span></div><div class="l"><span style="margin-left:25px"></span><span >type	int	消息类型	 </span></div></div><div class="para"><div class="duanluo"><span>175</span></div><div class="l"><span style="margin-left:25px"></span><span >timestamp	varchar	发送时间	 </span></div></div><div class="para"><div class="duanluo"><span>176</span></div><div class="l"><span style="margin-left:25px"></span><span >image	varchar	图片路径	 </span></div></div><div class="para"><div class="duanluo"><span>177</span></div><div class="l"><span style="margin-left:25px"></span><span >5 系统功能的实现 </span></div></div><div class="para"><div class="duanluo"><span>178</span></div><div class="l"><span style="margin-left:25px"></span><span >5.1 开发环境和开发工具 </span></div></div><div class="para"><div class="duanluo"><span>179</span></div><div class="l"><span style="margin-left:25px"></span><span >5.1.1 开发语言 </span></div></div><div class="para"><div class="duanluo"><span>180</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/315.htm" target="right" class="red">(1)应用Node.js作为开发后台Web服务器的语言。</a></div></div><div class="para"><div class="duanluo"><span>181</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/316.htm" target="right" class="orange">(2)前端是小程序平台，使用Html+Css+JavaScript配合使用实现。</a></div><div class="modify" align="right" paraseq="180"><span class="btn btn-blue" onclick="submitPart('(2)前端是小程序平台，使用Html+Css+JavaScript配合使用实现。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>182</span></div><div class="l"><span style="margin-left:25px"></span><span >(3)多种数据库语言用于增删改查数据。 </span></div></div><div class="para"><div class="duanluo"><span>183</span></div><div class="l"><span style="margin-left:25px"></span><span >5.1.2 开发工具 </span></div></div><div class="para"><div class="duanluo"><span>184</span></div><div class="l"><span style="margin-left:25px"></span><span >(1)集成开发环境微信开发者工具(测试版)。 </span></div></div><div class="para"><div class="duanluo"><span>185</span></div><div class="l"><span style="margin-left:25px"></span><span >(2)MySql数据库。 </span></div></div><div class="para"><div class="duanluo"><span>186</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/321.htm" target="right" class="red">(3)Visual Studio Code。</a></div></div><div class="para"><div class="duanluo"><span>187</span></div><div class="l"><span style="margin-left:25px"></span><span >(4)HBuilder X。 </span></div></div><div class="para"><div class="duanluo"><span>188</span></div><div class="l"><span style="margin-left:25px"></span><span >5.1.3 开发环境 </span></div></div><div class="para"><div class="duanluo"><span>189</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/324.htm" target="right" class="orange">(1)电脑：内存12G，Windows10操作系统的电脑一台。</a></div><div class="modify" align="right" paraseq="188"><span class="btn btn-blue" onclick="submitPart('(1)电脑：内存12G，Windows10操作系统的电脑一台。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>190</span></div><div class="l"><span style="margin-left:25px"></span><span >(2)Web服务器：Koa。 </span></div></div><div class="para"><div class="duanluo"><span>191</span></div><div class="l"><span style="margin-left:25px"></span><span >(3)ios13.1系统手机2部。 </span></div></div><div class="para"><div class="duanluo"><span>192</span></div><div class="l"><span style="margin-left:25px"></span><span >5.2 系统功能实现与测试 </span></div></div><div class="para"><div class="duanluo"><span>193</span></div><div class="l"><span style="margin-left:25px"></span><span >5.2.1 用户登录和注册功能的实现与测试 </span></div></div><div class="para"><div class="duanluo"><span>194</span></div><div class="l"><span style="margin-left:25px"></span><span >经过慎重考虑后，登录功能没有使用微信小程序官方的授权登录，而是使用的手机号码注册和登录的方式。 </span><span >用户注册后可以设置密码，设置密码后直接登录进入宠物社交平台，已经注册过的用户可以选择手机号码和手机验证码登录或者手机号码和密码登录。 </span><a href="../sentence_detail/331.htm" target="right" class="red">登录成功后，后台会返回token用于前端进行授权接口。</a><a href="../sentence_detail/332.htm" target="right" class="red">请求注册登录界面如图5.1，图5.2所示：</a></div><div class="modify" align="right" paraseq="193"><span class="btn btn-blue" onclick="submitPart('经过慎重考虑后，登录功能没有使用微信小程序官方的授权登录，而是使用的手机号码注册和登录的方式。用户注册后可以设置密码，设置密码后直接登录进入宠物社交平台，已经注册过的用户可以选择手机号码和手机验证码登录或者手机号码和密码登录。登录成功后，后台会返回token用于前端进行授权接口。请求注册登录界面如图5.1，图5.2所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>195</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.1 注册界面 </span></div></div><div class="para"><div class="duanluo"><span>196</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.2 两种登录方式界面 </span></div></div><div class="para"><div class="duanluo"><span>197</span></div><div class="l"><span style="margin-left:25px"></span><span >用户登录成功后会进入到系统初始页面&quot;养宠&rdquo;选项卡，&quot;养宠&rdquo;界面中主要由宠物信息，记账本，宠物百科，同城服务，精选文章等五个功能组成。 </span><span >如图5.3所示： </span></div><div class="modify" align="right" paraseq="196"><span class="btn btn-blue" onclick="submitPart('用户登录成功后会进入到系统初始页面&quot;养宠&rdquo;选项卡，&quot;养宠&rdquo;界面中主要由宠物信息，记账本，宠物百科，同城服务，精选文章等五个功能组成。如图5.3所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>198</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.3登录后初始页面 </span></div></div><div class="para"><div class="duanluo"><span>199</span></div><div class="l"><span style="margin-left:25px"></span><span >5.2.2 宠物信息管理功能的实现与测试 </span></div></div><div class="para"><div class="duanluo"><span>200</span></div><div class="l"><span style="margin-left:25px"></span><span >用户登录宠物社交平台后，可以添加宠物信息，可以添加多个宠物，添加宠物信息界面如图5.4所示： </span></div><div class="modify" align="right" paraseq="199"><span class="btn btn-blue" onclick="submitPart('用户登录宠物社交平台后，可以添加宠物信息，可以添加多个宠物，添加宠物信息界面如图5.4所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>201</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.4添加宠物信息界面 </span></div></div><div class="para"><div class="duanluo"><span>202</span></div><div class="l"><span style="margin-left:25px"></span><span >5.2.3 社区动态功能的实现与测试 </span></div></div><div class="para"><div class="duanluo"><span>203</span></div><div class="l"><span style="margin-left:25px"></span><span >用户点击&quot;社区&rdquo;选项卡可以进入到&quot;社区&rdquo;界面，用户在社区界面里可以看到社区动态列表，动态列表里可以看到其他用户发布的动态，当前用户也可以发布动态， </span><span >在界面顶部可以看到两个图标，点击&quot;视频&rdquo;图标可以进入发布视频动态界面，点击&quot;相机&rdquo;图标可以进入发布图片动态界面。 </span><span >社区动态功能具体操作界面如图5.5所示： </span></div><div class="modify" align="right" paraseq="202"><span class="btn btn-blue" onclick="submitPart('用户点击&quot;社区&rdquo;选项卡可以进入到&quot;社区&rdquo;界面，用户在社区界面里可以看到社区动态列表，动态列表里可以看到其他用户发布的动态，当前用户也可以发布动态，在界面顶部可以看到两个图标，点击&quot;视频&rdquo;图标可以进入发布视频动态界面，点击&quot;相机&rdquo;图标可以进入发布图片动态界面。社区动态功能具体操作界面如图5.5所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>204</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.5发布社区动态 </span></div></div><div class="para"><div class="duanluo"><span>205</span></div><div class="l"><span style="margin-left:25px"></span><span >5.2.4 在线聊天功能的实现与测试 </span></div></div><div class="para"><div class="duanluo"><span>206</span></div><div class="l"><span style="margin-left:25px"></span><span >用户在&quot;社区&rdquo;界面点击其他用户的头像可以查看其它用户的个人信息，可以关注该用户，也可以和该用户在线进行一对一聊天，聊天内容可以是图片或者文字。 </span><span >在线聊天界面如图5.6所示： </span></div><div class="modify" align="right" paraseq="205"><span class="btn btn-blue" onclick="submitPart('用户在&quot;社区&rdquo;界面点击其他用户的头像可以查看其它用户的个人信息，可以关注该用户，也可以和该用户在线进行一对一聊天，聊天内容可以是图片或者文字。在线聊天界面如图5.6所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>207</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.6在线聊天界面 </span></div></div><div class="para"><div class="duanluo"><span>208</span></div><div class="l"><span style="margin-left:25px"></span><span >5.2.5 宠物相关服务功能的实现与测试 </span></div></div><div class="para"><div class="duanluo"><span>209</span></div><div class="l"><span style="margin-left:25px"></span><span >用户在&quot;萌宠界面&rdquo;点击宠物百科，地图定位，生活记事本等模块的图片时，可以进入对应功能模块的界面。 </span><span >下面只详细介绍宠物百科功能，用户点击宠物百科模块后，会进入宠物种类列表，用户可以选择任意一个种类列表进入该种类品种列表，进入种类品种列表后， </span><span >可以点击任意一个品种查看该品种详细信息。 </span><span >宠物百科具体界面如图5.7所示： </span></div><div class="modify" align="right" paraseq="208"><span class="btn btn-blue" onclick="submitPart('用户在&quot;萌宠界面&rdquo;点击宠物百科，地图定位，生活记事本等模块的图片时，可以进入对应功能模块的界面。下面只详细介绍宠物百科功能，用户点击宠物百科模块后，会进入宠物种类列表，用户可以选择任意一个种类列表进入该种类品种列表，进入种类品种列表后，可以点击任意一个品种查看该品种详细信息。宠物百科具体界面如图5.7所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>210</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.7宠物百科界面 </span></div></div><div class="para"><div class="duanluo"><span>211</span></div><div class="l"><span style="margin-left:25px"></span><span >5.2.6 用户信息管理功能的实现与测试 </span></div></div><div class="para"><div class="duanluo"><span>212</span></div><div class="l"><span style="margin-left:25px"></span><span >用户在&quot;我的&rdquo;选项卡界面增删改查自己的信息，包括个人资料，我的宠物，我的关注，我的动态，我的收藏，退出登录等功能。 </span><a href="../sentence_detail/358.htm" target="right" class="red">用户信息管理界面如图5.8所示：</a></div><div class="modify" align="right" paraseq="211"><span class="btn btn-blue" onclick="submitPart('用户在&quot;我的&rdquo;选项卡界面增删改查自己的信息，包括个人资料，我的宠物，我的关注，我的动态，我的收藏，退出登录等功能。用户信息管理界面如图5.8所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>213</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.8用户信息管理界面 </span></div></div><div class="para"><div class="duanluo"><span>214</span></div><div class="l"><span style="margin-left:25px"></span><span >用户点击任意一个模块都可以进入对应的界面，下面只详细介绍个人资料界面，个人资料包括姓名，性别，地区等基础属性。 </span><span >个人资料界面如图5.9所示： </span></div><div class="modify" align="right" paraseq="213"><span class="btn btn-blue" onclick="submitPart('用户点击任意一个模块都可以进入对应的界面，下面只详细介绍个人资料界面，个人资料包括姓名，性别，地区等基础属性。个人资料界面如图5.9所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>215</span></div><div class="l"><span style="margin-left:25px"></span><span >图5.9个人资料界面 </span></div></div><div class="para"><div class="duanluo"><span>216</span></div><div class="l"><span style="margin-left:25px"></span><span >6 结论 </span></div></div><div class="para"><div class="duanluo"><span>217</span></div><div class="l"><span style="margin-left:25px"></span><span >本系统从需求分析，到设计和编码测试，共经历了3个月的时间，期间进行了多次需求方面的修改。 </span></div><div class="modify" align="right" paraseq="216"><span class="btn btn-blue" onclick="submitPart('本系统从需求分析，到设计和编码测试，共经历了3个月的时间，期间进行了多次需求方面的修改。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>218</span></div><div class="l"><span style="margin-left:25px"></span><span >经过此次项目编程和学习，实现了登录注册模块，用户信息管理模块，宠物信息管理模块，宠物相关服务模块，社区动态模块，在线聊天模块等功能模块的全部预期功能。 </span><span >在功能方面完成度较高。 </span><span >整个系统根据MVC模式进行开发，经过模块化的编程，后台接口和前台页面相对应，对于后期维护来说是十分方便的。 </span><span >数据库设计方面也是达到了预期的要求。 </span></div><div class="modify" align="right" paraseq="217"><span class="btn btn-blue" onclick="submitPart('经过此次项目编程和学习，实现了登录注册模块，用户信息管理模块，宠物信息管理模块，宠物相关服务模块，社区动态模块，在线聊天模块等功能模块的全部预期功能。在功能方面完成度较高。整个系统根据MVC模式进行开发，经过模块化的编程，后台接口和前台页面相对应，对于后期维护来说是十分方便的。数据库设计方面也是达到了预期的要求。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>219</span></div><div class="l"><span style="margin-left:25px"></span><span >在实现系统的过程中，学习到了诸如MySql，Koa，WebSocket等前后台一系列新的知识和技术。 </span><span >为了优化用户体验，在前台UI界面优化和后台数据处理方面进行了大量的编码工作。 </span><span >比如说上拉加载，加载提示，通讯录功能，显示大图，预览图片等等。 </span><span >实际体验效果也确实得到了较大的提升。 </span></div><div class="modify" align="right" paraseq="218"><span class="btn btn-blue" onclick="submitPart('在实现系统的过程中，学习到了诸如MySql，Koa，WebSocket等前后台一系列新的知识和技术。为了优化用户体验，在前台UI界面优化和后台数据处理方面进行了大量的编码工作。比如说上拉加载，加载提示，通讯录功能，显示大图，预览图片等等。实际体验效果也确实得到了较大的提升。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>220</span></div><div class="l"><span style="margin-left:25px"></span><span >在整个系统中，难点最大的是实现在线聊天功能，如何能够和用户及时的进行信息交互。 </span><span >在本系统中最终使用了WebSocket实现该功能，一改以往IM工具的轮询请求，而是建立全双工通道，使用户双方能够快速进行信息交互。 </span></div><div class="modify" align="right" paraseq="219"><span class="btn btn-blue" onclick="submitPart('在整个系统中，难点最大的是实现在线聊天功能，如何能够和用户及时的进行信息交互。在本系统中最终使用了WebSocket实现该功能，一改以往IM工具的轮询请求，而是建立全双工通道，使用户双方能够快速进行信息交互。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>221</span></div><div class="l"><span style="margin-left:25px"></span><span >但是，由于时间关系和技术方面的原因，部分功能没有实现，比如说消息的推送功能还有商城功能。 </span><span >除此以外在编码方面还是存在一些代码冗余的问题，在数据库优化方面还有很大提升的空间，在往后的项目开发过程中应该注意。 </span></div><div class="modify" align="right" paraseq="220"><span class="btn btn-blue" onclick="submitPart('但是，由于时间关系和技术方面的原因，部分功能没有实现，比如说消息的推送功能还有商城功能。除此以外在编码方面还是存在一些代码冗余的问题，在数据库优化方面还有很大提升的空间，在往后的项目开发过程中应该注意。',this)" class="modify">段落修改</div></div><div align="center" class="navigation"><a href="paper_1.htm"><span class="btn_gray">首页</span></a><a  href="paper_1.htm"><span class="btn_gray">上一页</span></a><a href="#"><span class="btn_gray">下一页</span></a><a href="paper_2.htm">	<span class="btn_gray">尾页</span></a><span>页码：2/2页</span></div><div class="footer"><div align="center" class="a666" style="font-size:14px;padding-top:50px;padding-bottom:30px;"><div>检测报告由 <a class="nounderline" href="http://www.ptcheck.com" target="_blank">PTcheck</a>文献相似度检测系统生成 </div><div>Copyright © 2007-2018 PTcheck </div></div></div></div></body></html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>PTcheck论文检测报告</title>
+		<link rel="stylesheet" href="../css/base.css" />
+		<style type="text/css">
+		a {
+    color: #0796fe;
+}
+a:hover{
+    color:#0796fe!important;
+}
+			.mainContainer {
+				padding: 20px;
+	
+			}
+			
+			.navigation span {
+				display: inline-block;
+				padding-left: 5px;
+				padding-right: 5px;
+				color: #666;
+			}
+			
+			.btn_gray {
+				border: solid 1px #dddddd;
+				background-color: #eeeeee;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+			
+			.btn_gray:hover,
+			.btn_blue {
+				background-color: #0099ff;
+				border: solid 1px #0099ff;
+				color: #fff!important;
+				border-radius: 5px;
+				cursor: pointer;
+			}
+			.para{
+				padding-top:20px;
+			}
+			
+			.duanluo{
+				padding-left:20px;
+				
+				padding-bottom: 5px;
+			}
+			.duanluo span{
+				display: inline-block;
+				padding-left:5px;
+				padding-right: 5px;
+				border: solid 1px #999;
+				color:#999;
+			}
+			.l{
+				line-height: 20px;
+				padding-bottom: 5px;
+			}
+			.l span{
+				color:#333;
+			}
+			.mymodify{
+				font-size:12px;
+			}
+			.mymodify textarea{
+				width:98%;
+				height:100px;
+				color:#333;
+				clear:both;
+			}
+			textarea{
+				padding:10px;
+				line-height: 20px;
+			}
+		</style>
+		<script type="text/javascript">
+
+        var isstorage=false;
+        var danhao;
+        var result= new Array();
+         function trimStr(str) {
+
+            if ((typeof (str) != "string") || !str) {
+
+                return "";
+
+            }
+
+            return str.replace(/(^\s*)|(\s*$)/g, "");
+
+        }
+          
+        function myclick() {
+            window.parent.parent.ViewMain.window.location.href = "../../htmls/jianchong_.htm";
+        }
+        function submitPart(obj, target) {
+            var parent = target.parentNode;
+            if(parent.getAttribute("data")=="add"){
+              var mynext = parent.nextSibling;
+              parent.setAttribute("data","remove");
+              parent.parentNode.removeChild(mynext);
+            }
+            else{
+            	parent.setAttribute("data","add");
+            	var temphtml = document.createElement("div");
+                temphtml.innerHTML = "<input type=\"hidden\" value=\""+ parent.getAttribute("paraseq") +"\"><div name=\"mymodify\" class=\"mymodify\" >"
+					+"<div class=\"a999\">改重内容（请对本句修改之后，点击“临时保存”，然后进入报告左侧“修改文档”页面中获取修改后的内容）：</div>"
+					+"<div><textarea>"+obj
+					+"</textarea>"
+					+"</div>"
+					+"<div align=\"right\" class=\"a999\" style=\"margin-top:14px;\">（注意：改完请及时到“修改文档”复制到原文）<span class=\"btn-gray btn a333\" onclick=\"mysave(this)\">临时保存</span></div>"
+				+"</div>";
+            	   parent.parentNode.insertBefore(temphtml, null);
+            }
+
+        }
+
+		function myNavigate(){
+		 document.getElementById("a_url").click();
+		}
+       
+        function mysave(target) {
+            var tempsen = trimStr(target.parentNode.previousSibling.lastChild.value.replace(/\"/g,"\\\"").replace(/\'/g,"\\\'"));
+            var paraseq = target.parentNode.parentNode.parentNode.firstChild.value;            
+            var mydiv = target.parentNode.parentNode.parentNode.previousSibling;
+             if (mydiv.nodeName == "#text") {
+                mydiv = mydiv.previousSibling;
+            }
+             
+            mydiv.lastChild.setAttribute("onclick", "submitPart('" + tempsen + "',this)");
+           mydiv.setAttribute("data","remove");
+           if (mydiv.firstChild.innerHTML != "已修改") {
+                var xiugai = document.createElement("span");
+                xiugai.setAttribute("style", "font-size:12px;color:#00AEAE;margin-right:10px;");
+                xiugai.innerHTML = "已修改";
+                mydiv.insertBefore(xiugai, mydiv.lastChild);
+               }
+            
+            var parent = target.parentNode.parentNode.parentNode;
+            parent.parentNode.removeChild(parent);
+            if(!isstorage)
+            {
+            window.parent.parent.parent.myset(paraseq, tempsen);
+            }
+            else
+            {
+            myset(paraseq, tempsen);
+            }
+        }
+        window.onload = function() {
+            danhao = document.getElementById("danhao").value;
+            if (window.localStorage) {
+                isstorage = true;
+            }
+            if (!isstorage) {
+                result = window.parent.parent.parent.modifyPara;
+                
+            }
+            else {
+                var temp = localStorage.getItem(danhao);
+                if (temp) {
+                    result = eval("(" + temp + ")");
+                }
+            }
+            if (result) {
+            	
+                for (var i = 0; i < result.length; i++) {
+                	
+                    //var all = $(":hidden");
+                    var all = getClass("div","modify");
+                   
+                    for (var j = 0; j < all.length; j++) {
+                        if (all[j].getAttribute("paraseq") == result[i].para) {
+                        	
+                            var xiugai = document.createElement("span");
+                            xiugai.setAttribute("style", "font-size:12px;color:#00AEAE;margin-right:10px;");
+                            xiugai.innerHTML = "已修改";
+                            all[j].insertBefore(xiugai, all[j].lastChild);
+                            all[j].lastChild.setAttribute("onclick", "submitPart('" + result[i].text.replace(/\"/g,"\\\"").replace(/\'/g,"\\\'") + "',this)");
+                        }
+                    }
+
+                }
+            }  
+        }
+
+
+        function mydivclick(e,obj) {
+            if (e.target.tagName.toUpperCase() != "INPUT") {
+                obj.lastChild.previousSibling.click();
+            }
+        }
+
+        function getClass(tagname, className) { //tagname指元素，className指class的值
+            var tagname = document.getElementsByTagName(tagname);  //获取指定元素
+            var tagnameAll = [];     //这个数组用于存储所有符合条件的元素
+            for (var i = 0; i < tagname.length; i++) {     //遍历获得的元素
+                if (tagname[i].className == className) {     //如果获得的元素中的class的值等于指定的类名，就赋值给tagnameAll
+                    tagnameAll[tagnameAll.length] = tagname[i];
+                }
+            }
+            return tagnameAll;
+
+        }
+
+       
+        
+        
+         function myset(paraseq, sen) {
+         	
+            var reg = new RegExp("\"", "g")
+            var model = "{\"para\":\"" + paraseq + "\",\"text\": \"" + sen + "\"}";
+            var mo = eval("(" + model + ")");
+            var exist = false;
+            for (var i = 0; i < result.length; i++) {
+                if (mo.para == result[i].para) {
+                    exist = true;
+                    result[i].text = mo.text;
+                }
+            }
+            if (!exist) {
+                result.push(mo);
+            }
+            localStorage.removeItem(danhao);
+            localStorage.setItem(danhao, json_encode(result));
+        }
+        
+        function json_decode(str_json) {
+            // Decodes the JSON representation into a PHP value  
+            //  
+            // version: 906.1806  
+            // discuss at: http://phpjs.org/functions/json_decode  
+            // +      original by: Public Domain (http://www.json.org/json2.js)  
+            // + reimplemented by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)  
+            // + improved by: T.J. Leahy  
+            // *     example 1: json_decode('[\n    "e",\n    {\n    "pluribus": "unum"\n}\n]');  
+            // *     returns 1: ['e', {pluribus: 'unum'}]  
+            /* 
+            http://www.JSON.org/json2.js 
+            2008-11-19 
+            Public Domain. 
+            NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK. 
+            See http://www.JSON.org/js.html 
+            */
+
+            var json = this.window.JSON;
+            if (typeof json === 'object' && typeof json.parse === 'function') {
+                return json.parse(str_json);
+            }
+
+            var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+            var j;
+            var text = str_json;
+
+            // Parsing happens in four stages. In the first stage, we replace certain  
+            // Unicode characters with escape sequences. JavaScript handles many characters  
+            // incorrectly, either silently deleting them, or treating them as line endings.  
+            cx.lastIndex = 0;
+            if (cx.test(text)) {
+                text = text.replace(cx, function(a) {
+                    return '\\u' +
+            ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+                });
+            }
+
+            // In the second stage, we run the text against regular expressions that look  
+            // for non-JSON patterns. We are especially concerned with '()' and 'new'  
+            // because they can cause invocation, and '=' because it can cause mutation.  
+            // But just to be safe, we want to reject all unexpected forms.  
+
+            // We split the second stage into 4 regexp operations in order to work around  
+            // crippling inefficiencies in IE's and Safari's regexp engines. First we  
+            // replace the JSON backslash pairs with '@' (a non-JSON character). Second, we  
+            // replace all simple value tokens with ']' characters. Third, we delete all  
+            // open brackets that follow a colon or comma or that begin the text. Finally,  
+            // we look to see that the remaining characters are only whitespace or ']' or  
+            // ',' or ':' or '{' or '}'. If that is so, then the text is safe for eval.  
+            if (/^[\],:{}\s]*$/.
+        test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@').
+            replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+            replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+
+                // In the third stage we use the eval function to compile the text into a  
+                // JavaScript structure. The '{' operator is subject to a syntactic ambiguity  
+                // in JavaScript: it can begin a block or an object literal. We wrap the text  
+                // in parens to eliminate the ambiguity.  
+
+                j = eval('(' + text + ')');
+
+                return j;
+            }
+
+            // If the text is not JSON parseable, then a SyntaxError is thrown.  
+            throw new SyntaxError('json_decode');
+        }
+
+        function json_encode(mixed_val) {
+            // Returns the JSON representation of a value  
+            //  
+            // version: 906.1806  
+            // discuss at: http://phpjs.org/functions/json_encode  
+            // +      original by: Public Domain (http://www.json.org/json2.js)  
+            // + reimplemented by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)  
+            // + improved by: T.J. Leahy  
+            // *     example 1: json_encode(['e', {pluribus: 'unum'}]);  
+            // *     returns 1: '[\n    "e",\n    {\n    "pluribus": "unum"\n}\n]'  
+            /* 
+            http://www.JSON.org/json2.js 
+            2008-11-19 
+            Public Domain. 
+            NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK. 
+            See http://www.JSON.org/js.html 
+            */
+            var json = this.window.JSON;
+            if (typeof json === 'object' && typeof json.stringify === 'function') {
+                return json.stringify(mixed_val);
+            }
+
+            var value = mixed_val;
+
+            var quote = function(string) {
+                var escapable = /[\\\"\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+                var meta = {    // table of character substitutions  
+                    '\b': '\\b',
+                    '\t': '\\t',
+                    '\n': '\\n',
+                    '\f': '\\f',
+                    '\r': '\\r',
+                    '"': '\\"',
+                    '\\': '\\\\'
+                };
+
+                escapable.lastIndex = 0;
+                return escapable.test(string) ?
+        '"' + string.replace(escapable, function(a) {
+            var c = meta[a];
+            return typeof c === 'string' ? c :
+            '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+        }) + '"' :
+        '"' + string + '"';
+            };
+
+            var str = function(key, holder) {
+                var gap = '';
+                var indent = '    ';
+                var i = 0;          // The loop counter.  
+                var k = '';          // The member key.  
+                var v = '';          // The member value.  
+                var length = 0;
+                var mind = gap;
+                var partial = [];
+                var value = holder[key];
+
+                // If the value has a toJSON method, call it to obtain a replacement value.  
+                if (value && typeof value === 'object' &&
+            typeof value.toJSON === 'function') {
+                    value = value.toJSON(key);
+                }
+
+                // What happens next depends on the value's type.  
+                switch (typeof value) {
+                    case 'string':
+                        return quote(value);
+
+                    case 'number':
+                        // JSON numbers must be finite. Encode non-finite numbers as null.  
+                        return isFinite(value) ? String(value) : 'null';
+
+                    case 'boolean':
+                    case 'null':
+                        // If the value is a boolean or null, convert it to a string. Note:  
+                        // typeof null does not produce 'null'. The case is included here in  
+                        // the remote chance that this gets fixed someday.  
+
+                        return String(value);
+
+                    case 'object':
+                        // If the type is 'object', we might be dealing with an object or an array or  
+                        // null.  
+                        // Due to a specification blunder in ECMAScript, typeof null is 'object',  
+                        // so watch out for that case.  
+                        if (!value) {
+                            return 'null';
+                        }
+
+                        // Make an array to hold the partial results of stringifying this object value.  
+                        gap += indent;
+                        partial = [];
+
+                        // Is the value an array?  
+                        if (Object.prototype.toString.apply(value) === '[object Array]') {
+                            // The value is an array. Stringify every element. Use null as a placeholder  
+                            // for non-JSON values.  
+
+                            length = value.length;
+                            for (i = 0; i < length; i += 1) {
+                                partial[i] = str(i, value) || 'null';
+                            }
+
+                            // Join all of the elements together, separated with commas, and wrap them in  
+                            // brackets.  
+                            v = partial.length === 0 ? '[]' :
+                    gap ? '[\n' + gap +
+                    partial.join(',\n' + gap) + '\n' +
+                    mind + ']' :
+                    '[' + partial.join(',') + ']';
+                            gap = mind;
+                            return v;
+                        }
+
+                        // Iterate through all of the keys in the object.  
+                        for (k in value) {
+                            if (Object.hasOwnProperty.call(value, k)) {
+                                v = str(k, value);
+                                if (v) {
+                                    partial.push(quote(k) + (gap ? ': ' : ':') + v);
+                                }
+                            }
+                        }
+
+                        // Join all of the member texts together, separated with commas,  
+                        // and wrap them in braces.  
+                        v = partial.length === 0 ? '{}' :
+                gap ? '{\n' + gap + partial.join(',\n' + gap) + '\n' +
+                mind + '}' : '{' + partial.join(',') + '}';
+                        gap = mind;
+                        return v;
+                }
+            };
+
+            // Make a fake root object containing our value under the key of ''.  
+            // Return the result of stringifying the value.  
+            return str('', {
+                '': value
+            });
+        } 
+       
+    </script>
+	</head>
+
+	<body><a href="http://www.ptcheck.com/tea/segment.aspx" target="_blank" id="a_url" style="display:none;" ></a> <input type="hidden" id="danhao" value="883132417351042241" /><div class="mainContainer"><div align="center" class="navigation"><a href="paper_1.htm"><span class="btn_gray">首页</span></a><a  href="#"><span class="btn_gray">上一页</span></a><a href="paper_2.htm"><span class="btn_gray">下一页</span></a><a href="paper_2.htm">	<span class="btn_gray">尾页</span></a><span>页码：1/2页</span></div><div class="zhengwen"><div class="para"><div class="duanluo"><span>1</span></div><div class="l"><span style="margin-left:25px"></span><span >摘要 </span></div></div><div class="para"><div class="duanluo"><span>2</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/2.htm" target="right" class="orange">随着人们生活水平的不断提高和移动终端的快速变革，越来越多的人喜欢养宠物并分享宠物的日常生活动态。</a><span >从上述现象以及需求出发，本设计主要研究基于宠物信息分享以及社交功能的融合，构建基于宠物这一群体的社交平台。 </span></div><div class="modify" align="right" paraseq="1"><span class="btn btn-blue" onclick="submitPart('随着人们生活水平的不断提高和移动终端的快速变革，越来越多的人喜欢养宠物并分享宠物的日常生活动态。从上述现象以及需求出发，本设计主要研究基于宠物信息分享以及社交功能的融合，构建基于宠物这一群体的社交平台。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>3</span></div><div class="l"><span style="margin-left:25px"></span><span >本设计所构建的宠物社交平台分为客户端以及服务端两个部分，服务端采用Koa作为开发框架，Node. </span><a href="../sentence_detail/5.htm" target="right" class="orange">js为Web服务器，Mysql作为数据库，客户端采用微信小程序开发平台。</a><span >而构建的宠物社交平台由登录注册功能，聊天功能，定位功能，发布动态功能，宠物信息管理功能，用户信息管理以及信息分享等功能模块组成。 </span></div><div class="modify" align="right" paraseq="2"><span class="btn btn-blue" onclick="submitPart('本设计所构建的宠物社交平台分为客户端以及服务端两个部分，服务端采用Koa作为开发框架，Node.js为Web服务器，Mysql作为数据库，客户端采用微信小程序开发平台。而构建的宠物社交平台由登录注册功能，聊天功能，定位功能，发布动态功能，宠物信息管理功能，用户信息管理以及信息分享等功能模块组成。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>4</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/7.htm" target="right" class="red">论文首先介绍了平台开发的背景，进行需求分析，确定系统模块设计方案，然后编码实现整个系统，并且在不同系统的真机上进行了测试，最终完成了宠物社交平台。</a><span >本设计将宠物社交与微信小程序平台相结合而设计的社交平台增强了宠物社交平台系统的稳定性，为该社交平台提供了巨大的潜在用户， </span><span >帮助用户解决了大部分有关宠物的问题，满足了用户对宠物信息分享的需求，提高了用户的生活体验。 </span></div><div class="modify" align="right" paraseq="3"><span class="btn btn-blue" onclick="submitPart('论文首先介绍了平台开发的背景，进行需求分析，确定系统模块设计方案，然后编码实现整个系统，并且在不同系统的真机上进行了测试，最终完成了宠物社交平台。本设计将宠物社交与微信小程序平台相结合而设计的社交平台增强了宠物社交平台系统的稳定性，为该社交平台提供了巨大的潜在用户，帮助用户解决了大部分有关宠物的问题，满足了用户对宠物信息分享的需求，提高了用户的生活体验。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>5</span></div><div class="l"><span style="margin-left:25px"></span><span >[关键词]：宠物信息分享；社交平台；微信小程序；Node.js </span></div><div class="modify" align="right" paraseq="4"><span class="btn btn-blue" onclick="submitPart('[关键词]：宠物信息分享；社交平台；微信小程序；Node.js',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>6</span></div><div class="l"><span style="margin-left:25px"></span><span >Abstact </span></div></div><div class="para"><div class="duanluo"><span>7</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/12.htm" target="right" class="orange">With the continuous improvement of people&#39;s living standards and the rapid change of mobile terminals,</a><a href="../sentence_detail/13.htm" target="right" class="orange"> more and more people like to keep pets and share the daily life of pets.</a><span > Starting from the above phenomena and needs, </span><span > this design mainly studies the construction of a social platform based on pets based on the integration of pet information sharing and social functions. </span></div><div class="modify" align="right" paraseq="6"><span class="btn btn-blue" onclick="submitPart('With the continuous improvement of people\&#39;s living standards and the rapid change of mobile terminals,more and more people like to keep pets and share the daily life of pets.Starting from the above phenomena and needs,this design mainly studies the construction of a social platform based on pets based on the integration of pet information sharing and social functions.',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>8</span></div><div class="l"><span style="margin-left:25px"></span><span >The pet social platform constructed by this design is divided into two parts, </span><a href="../sentence_detail/17.htm" target="right" class="orange"> the client and the server.</a><a href="../sentence_detail/18.htm" target="right" class="orange"> The server uses Koa as the development framework, Node.</a><a href="../sentence_detail/19.htm" target="right" class="orange">js as the web server, Mysql as the database,</a><a href="../sentence_detail/20.htm" target="right" class="orange"> and the client uses the WeChat applet development platform.</a><span > The constructed pet social platform consists of login and registration functions, </span><span > chat functions, positioning functions, release dynamic functions, </span><span > pet information management functions, user information management, </span><a href="../sentence_detail/24.htm" target="right" class="red"> and information sharing and other functional modules.</a></div><div class="modify" align="right" paraseq="7"><span class="btn btn-blue" onclick="submitPart('The pet social platform constructed by this design is divided into two parts,the client and the server.The server uses Koa as the development framework, Node.js as the web server, Mysql as the database,and the client uses the WeChat applet development platform.The constructed pet social platform consists of login and registration functions,chat functions, positioning functions, release dynamic functions,pet information management functions, user information management,and information sharing and other functional modules.',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>9</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/25.htm" target="right" class="orange">The dissertation first introduces the background of platform development,</a><span > conducts requirements analysis, </span><a href="../sentence_detail/27.htm" target="right" class="orange"> determines the system module design plan,</a><a href="../sentence_detail/28.htm" target="right" class="orange"> and then codes the entire system,</a><span > and tests it on real machines of different systems, </span><a href="../sentence_detail/30.htm" target="right" class="orange"> and finally completes the pet social platform.</a><span > The social platform designed by combining pet socialization with WeChat Mini Program platform enhances the stability of the pet social platform system, </span><span > provides huge potential users for the social platform, </span><span > helps users solve most pet-related problems, </span><a href="../sentence_detail/34.htm" target="right" class="orange"> and meets It meets the user&#39;s need for pet information sharing and improves the user&#39;s life experience.</a></div><div class="modify" align="right" paraseq="8"><span class="btn btn-blue" onclick="submitPart('The dissertation first introduces the background of platform development,conducts requirements analysis,determines the system module design plan,and then codes the entire system,and tests it on real machines of different systems,and finally completes the pet social platform.The social platform designed by combining pet socialization with WeChat Mini Program platform enhances the stability of the pet social platform system,provides huge potential users for the social platform,helps users solve most pet-related problems,and meets It meets the user\&#39;s need for pet information sharing and improves the user\&#39;s life experience.',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>10</span></div><div class="l"><span style="margin-left:25px"></span><span >[Keywords]: Pet information sharing; </span><span > Social platform; WeChat mini program; Node. </span><span >js </span></div><div class="modify" align="right" paraseq="9"><span class="btn btn-blue" onclick="submitPart('[Keywords]: Pet information sharing;Social platform; WeChat mini program; Node.js',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>11</span></div><div class="l"><span style="margin-left:25px"></span><span >1 绪论 </span></div></div><div class="para"><div class="duanluo"><span>12</span></div><div class="l"><span style="margin-left:25px"></span><span >1.1 研究背景  </span></div></div><div class="para"><div class="duanluo"><span>13</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/40.htm" target="right" class="red">伴随着经济水平增长，人口老龄化步伐的加快，丁克家庭的增加，宠物逐渐变成人们娱乐休闲、情感寄托的很好选择。</a><a href="../sentence_detail/41.htm" target="right" class="red">宠物热既是一种时尚、审美，对生活的热爱，也可以从宠物的发展窥探到一个国家的经济发展水平。</a><a href="../sentence_detail/42.htm" target="right" class="red">据研究数据表明，在我国，宠物方面需求正以15%的速度增加。</a><a href="../sentence_detail/43.htm" target="right" class="orange">到2020年，中国宠物商品/服务消费规模有望突破2000亿元。</a><a href="../sentence_detail/44.htm" target="right" class="red">可见，我国宠物行业正处于飞速发展期，宠物行业存在巨大人力和财力需求。[1]</a></div><div class="modify" align="right" paraseq="12"><span class="btn btn-blue" onclick="submitPart('伴随着经济水平增长，人口老龄化步伐的加快，丁克家庭的增加，宠物逐渐变成人们娱乐休闲、情感寄托的很好选择。宠物热既是一种时尚、审美，对生活的热爱，也可以从宠物的发展窥探到一个国家的经济发展水平。据研究数据表明，在我国，宠物方面需求正以15%的速度增加。到2020年，中国宠物商品/服务消费规模有望突破2000亿元。可见，我国宠物行业正处于飞速发展期，宠物行业存在巨大人力和财力需求。[1]',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>14</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/45.htm" target="right" class="orange">根据《2019年中国移动互联网行业分析报告-市场现状与发展趋势分析》显示，近年来，我国移动互联网快速发展。</a><a href="../sentence_detail/46.htm" target="right" class="red">我国移动互联网接入流量从2016年上半年的37.5GB至2019年上半年的553.9亿GB，增长约15倍。</a><a href="../sentence_detail/47.htm" target="right" class="red">随着移动互联网的普及，我国网民使用手机上网的比例也逐渐增多。</a><span >截至2019年6月，我国网民使用手机上网的比例达99.1%，较去年提升0.5个百分点。 </span><a href="../sentence_detail/49.htm" target="right" class="red">2019年上半年，手机网民经常使用的APP中，即时通信类APP占用时间最长，比例为14.5%。</a><span >随着移动互联网的快速发展，使得宠物行业也能够通过移动终端为广大养宠物的用户构建一个宠物交流平台，丰富养育宠物的用户的生活和解决在这过程中遇到的问题。 </span></div><div class="modify" align="right" paraseq="13"><span class="btn btn-blue" onclick="submitPart('根据《2019年中国移动互联网行业分析报告-市场现状与发展趋势分析》显示，近年来，我国移动互联网快速发展。我国移动互联网接入流量从2016年上半年的37.5GB至2019年上半年的553.9亿GB，增长约15倍。随着移动互联网的普及，我国网民使用手机上网的比例也逐渐增多。截至2019年6月，我国网民使用手机上网的比例达99.1%，较去年提升0.5个百分点。2019年上半年，手机网民经常使用的APP中，即时通信类APP占用时间最长，比例为14.5%。随着移动互联网的快速发展，使得宠物行业也能够通过移动终端为广大养宠物的用户构建一个宠物交流平台，丰富养育宠物的用户的生活和解决在这过程中遇到的问题。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>15</span></div><div class="l"><span style="margin-left:25px"></span><span >宠物社交平台， </span><span >正是在基于养宠物的用户越来越多的大趋势下和移动智能设备普及率越来越高的情况下应运而生的。 </span><span >通过该平台，已经有宠物的用户可以在线与其他用户进行交流，快速定位用户群体，让用户可以与其他用户分享养宠物的经验。 </span><span >同时，对于暂时没有养宠物的用户，平台提供了许多不同种类宠物的信息，让用户可以在养育宠物之前对想养育的宠物品类有一个初步的了解。 </span><span >宠物社交平台的目的就是为了让更多养育宠物的用户进一步了解宠物，让宠物更好地生活以及愉悦自己的生活[]。 </span></div><div class="modify" align="right" paraseq="14"><span class="btn btn-blue" onclick="submitPart('宠物社交平台，正是在基于养宠物的用户越来越多的大趋势下和移动智能设备普及率越来越高的情况下应运而生的。通过该平台，已经有宠物的用户可以在线与其他用户进行交流，快速定位用户群体，让用户可以与其他用户分享养宠物的经验。同时，对于暂时没有养宠物的用户，平台提供了许多不同种类宠物的信息，让用户可以在养育宠物之前对想养育的宠物品类有一个初步的了解。宠物社交平台的目的就是为了让更多养育宠物的用户进一步了解宠物，让宠物更好地生活以及愉悦自己的生活[]。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>16</span></div><div class="l"><span style="margin-left:25px"></span><span >1.2 国内外研究现状 </span></div></div><div class="para"><div class="duanluo"><span>17</span></div><div class="l"><span style="margin-left:25px"></span><span >1.2.1 国内研究现状 </span></div></div><div class="para"><div class="duanluo"><span>18</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/58.htm" target="right" class="red">有关数据显示，中国宠物狗的数量已经达到2740万只，城镇平均养宠率约为11%，为世界前三的&quot;养宠大国&rdquo;。</a><a href="../sentence_detail/59.htm" target="right" class="red">从2012年-2017年，我国宠物行业市场规模不断扩大，年均复合增长达到34.63%，增长十分迅速。</a><a href="../sentence_detail/60.htm" target="right" class="red">据统计，2017年中国宠物行业市场规模达到1470亿，同比增长20.5%。</a><a href="../sentence_detail/61.htm" target="right" class="red">未来，随着宠物饲养观念的普及和宠物行业延伸服务的挖掘，我国宠物行业的市场空间将进一步扩大。</a><a href="../sentence_detail/62.htm" target="right" class="red">未来3至5年，宠物行业经济将继续增长，到2021年，养宠渗透率持续提升，预计城镇养宠率将达19%，宠物市场容量有望翻番，复合年均增长率为16.6%。</a><a href="../sentence_detail/63.htm" target="right" class="red">到2022年，宠物市场规模有望突破2500亿元。</a><a href="../sentence_detail/64.htm" target="right" class="red">随着国内宠物经济消费升级的推进，消费者对高品质线上宠物消费方式的接受程度越来越高。</a><a href="../sentence_detail/65.htm" target="right" class="red">京东大数据显示，2015-2018年京东平台上，宠物消费始终保持着100%以上的增长，且有不断平稳上升的趋势[2]。</a></div><div class="modify" align="right" paraseq="17"><span class="btn btn-blue" onclick="submitPart('有关数据显示，中国宠物狗的数量已经达到2740万只，城镇平均养宠率约为11%，为世界前三的&quot;养宠大国&rdquo;。从2012年-2017年，我国宠物行业市场规模不断扩大，年均复合增长达到34.63%，增长十分迅速。据统计，2017年中国宠物行业市场规模达到1470亿，同比增长20.5%。未来，随着宠物饲养观念的普及和宠物行业延伸服务的挖掘，我国宠物行业的市场空间将进一步扩大。未来3至5年，宠物行业经济将继续增长，到2021年，养宠渗透率持续提升，预计城镇养宠率将达19%，宠物市场容量有望翻番，复合年均增长率为16.6%。到2022年，宠物市场规模有望突破2500亿元。随着国内宠物经济消费升级的推进，消费者对高品质线上宠物消费方式的接受程度越来越高。京东大数据显示，2015-2018年京东平台上，宠物消费始终保持着100%以上的增长，且有不断平稳上升的趋势[2]。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>19</span></div><div class="l"><span style="margin-left:25px"></span><span >1.2.2 国外研究现状 </span></div></div><div class="para"><div class="duanluo"><span>20</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/67.htm" target="right" class="red">宠物行业在欧美等发达国家经历了上百年的发展，从宠物经济产值来看，欧美宠物经济产值占全球宠物总经济产值的60%，其中美国37%，欧洲23%。</a><a href="../sentence_detail/68.htm" target="right" class="red">美国是世界上最发达和规模最大的宠物经济体。</a><a href="../sentence_detail/69.htm" target="right" class="red">美国宠物产品协会(APPA)数据显示，2018年美国宠物消费支出金额达到725.6亿美元，与2017年695.1亿美元相比，增长4.4%，</a><a href="../sentence_detail/70.htm" target="right" class="red">预计2020年美国宠物消费支出金额仍将继续保持稳定增长，规模达到753.8亿美元左右。</a><a href="../sentence_detail/71.htm" target="right" class="red">根据APPA官方网站披露，2019-2020年度的全国宠物主人调查统计数据显示，67%的美国家庭拥有至少一只宠物，</a><a href="../sentence_detail/72.htm" target="right" class="red">拥有宠物的家庭数量已到达8490万户。</a><a href="../sentence_detail/73.htm" target="right" class="red">千禧一代是宠物主人中的最大部分，调查结果显示，超过80%的千禧一代宠物主人拥有狗，而50%左右的人拥有猫[3]。</a></div><div class="modify" align="right" paraseq="19"><span class="btn btn-blue" onclick="submitPart('宠物行业在欧美等发达国家经历了上百年的发展，从宠物经济产值来看，欧美宠物经济产值占全球宠物总经济产值的60%，其中美国37%，欧洲23%。美国是世界上最发达和规模最大的宠物经济体。美国宠物产品协会(APPA)数据显示，2018年美国宠物消费支出金额达到725.6亿美元，与2017年695.1亿美元相比，增长4.4%，预计2020年美国宠物消费支出金额仍将继续保持稳定增长，规模达到753.8亿美元左右。根据APPA官方网站披露，2019-2020年度的全国宠物主人调查统计数据显示，67%的美国家庭拥有至少一只宠物，拥有宠物的家庭数量已到达8490万户。千禧一代是宠物主人中的最大部分，调查结果显示，超过80%的千禧一代宠物主人拥有狗，而50%左右的人拥有猫[3]。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>21</span></div><div class="l"><span style="margin-left:25px"></span><span >1.3 研究目的与研究意义 </span></div></div><div class="para"><div class="duanluo"><span>22</span></div><div class="l"><span style="margin-left:25px"></span><span >通过宠物社交平台，打造一个以宠物相关信息为核心的大环境，让用户通过该平台随时随地了解与分享自己感兴趣的宠物信息，促进用户与用户之间的交流， </span><span >进而让用户与自己的宠物更好地生活，增添生活的乐趣。 </span></div><div class="modify" align="right" paraseq="21"><span class="btn btn-blue" onclick="submitPart('通过宠物社交平台，打造一个以宠物相关信息为核心的大环境，让用户通过该平台随时随地了解与分享自己感兴趣的宠物信息，促进用户与用户之间的交流，进而让用户与自己的宠物更好地生活，增添生活的乐趣。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>23</span></div><div class="l"><span style="margin-left:25px"></span><span >1.4 论文结构安排 </span></div></div><div class="para"><div class="duanluo"><span>24</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/78.htm" target="right" class="orange">本论文分为六个章节，第一章是绪论，主要介绍当前养育宠物的历史发展以及国内外的研究现状，同时对论文的研究内容进行概述。</a></div><div class="modify" align="right" paraseq="23"><span class="btn btn-blue" onclick="submitPart('本论文分为六个章节，第一章是绪论，主要介绍当前养育宠物的历史发展以及国内外的研究现状，同时对论文的研究内容进行概述。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>25</span></div><div class="l"><span style="margin-left:25px"></span><span >第二章是介绍开发宠物社交平台系统的关键技术，主要从技术以及平台方面进行说明。 </span></div><div class="modify" align="right" paraseq="24"><span class="btn btn-blue" onclick="submitPart('第二章是介绍开发宠物社交平台系统的关键技术，主要从技术以及平台方面进行说明。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>26</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/80.htm" target="right" class="orange">第三章是系统需求分析，通过对用户进行需求分析，确定系统所需要的功能。</a></div><div class="modify" align="right" paraseq="25"><span class="btn btn-blue" onclick="submitPart('第三章是系统需求分析，通过对用户进行需求分析，确定系统所需要的功能。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>27</span></div><div class="l"><span style="margin-left:25px"></span><span >第四章是系统设计，通过对系统物理架构，逻辑架构以及功能和数据库方面的设计，确定系统的界面功能以及数据需求。 </span></div><div class="modify" align="right" paraseq="26"><span class="btn btn-blue" onclick="submitPart('第四章是系统设计，通过对系统物理架构，逻辑架构以及功能和数据库方面的设计，确定系统的界面功能以及数据需求。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>28</span></div><div class="l"><span style="margin-left:25px"></span><span >第五章是编码实现宠物社交平台系统，开发完成后对各个功能进行测试，检测稳定性以及是否完成预期需求。 </span></div><div class="modify" align="right" paraseq="27"><span class="btn btn-blue" onclick="submitPart('第五章是编码实现宠物社交平台系统，开发完成后对各个功能进行测试，检测稳定性以及是否完成预期需求。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>29</span></div><div class="l"><span style="margin-left:25px"></span><span >第六章是对论文的总结，通过对宠物社交平台的开发过程以及途中遇到的问题进行了总结，同时对未来宠物社交平台的优化以及扩展作出了展望。 </span></div><div class="modify" align="right" paraseq="28"><span class="btn btn-blue" onclick="submitPart('第六章是对论文的总结，通过对宠物社交平台的开发过程以及途中遇到的问题进行了总结，同时对未来宠物社交平台的优化以及扩展作出了展望。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>30</span></div><div class="l"><span style="margin-left:25px"></span><span >2 宠物社交平台关键技术介绍 </span></div></div><div class="para"><div class="duanluo"><span>31</span></div><div class="l"><span style="margin-left:25px"></span><span >2.1 Node.js+Koa框架 </span></div></div><div class="para"><div class="duanluo"><span>32</span></div><div class="l"><span style="margin-left:25px"></span><span >Node. </span><a href="../sentence_detail/87.htm" target="right" class="red">js是一个基于Chrome V8 引擎的JavaScript运行环境，Node.</a><a href="../sentence_detail/88.htm" target="right" class="red">js使用了一个事件驱动、非阻塞式I/O的模型，使其轻量又高效[深入浅出Node.js]。</a><span >Koa框架是基于Node. </span><a href="../sentence_detail/90.htm" target="right" class="red">js平台搭建的一个Web框架，是Express的下一代基于Node.</a><a href="../sentence_detail/91.htm" target="right" class="red">js的Web框架,使用Koa编写Web 应用，通过组合不同的Generator，可以免除重复繁琐的回调函数嵌套，并极大地提升错误处理的效率。</a><a href="../sentence_detail/92.htm" target="right" class="red">Koa不在内核方法中绑定任何中间件，它仅仅提供了一个轻量优雅的函数库，使得编写 Web 应用变得得心应手[Node.</a><a href="../sentence_detail/93.htm" target="right" class="red">js中Express框架路由机制的研究]。</a></div><div class="modify" align="right" paraseq="31"><span class="btn btn-blue" onclick="submitPart('Node.js是一个基于Chrome V8 引擎的JavaScript运行环境，Node.js使用了一个事件驱动、非阻塞式I/O的模型，使其轻量又高效[深入浅出Node.js]。Koa框架是基于Node.js平台搭建的一个Web框架，是Express的下一代基于Node.js的Web框架,使用Koa编写Web 应用，通过组合不同的Generator，可以免除重复繁琐的回调函数嵌套，并极大地提升错误处理的效率。Koa不在内核方法中绑定任何中间件，它仅仅提供了一个轻量优雅的函数库，使得编写 Web 应用变得得心应手[Node.js中Express框架路由机制的研究]。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>33</span></div><div class="l"><span style="margin-left:25px"></span><span >2.2 Vue.js </span></div></div><div class="para"><div class="duanluo"><span>34</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/95.htm" target="right" class="red">Vue是一套用于构建用户界面的渐进式框架。</a><a href="../sentence_detail/96.htm" target="right" class="red">与其它大型框架不同的是，Vue被设计为可以自底向上逐层应用。</a><a href="../sentence_detail/97.htm" target="right" class="red">Vue的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。</a><a href="../sentence_detail/98.htm" target="right" class="red">另一方面，当与现代化的工具链以及各种支持类库结合使用时，Vue也完全能够为复杂的单页应用提供驱动。</a></div><div class="modify" align="right" paraseq="33"><span class="btn btn-blue" onclick="submitPart('Vue是一套用于构建用户界面的渐进式框架。与其它大型框架不同的是，Vue被设计为可以自底向上逐层应用。Vue的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与现代化的工具链以及各种支持类库结合使用时，Vue也完全能够为复杂的单页应用提供驱动。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>35</span></div><div class="l"><span style="margin-left:25px"></span><span >2.3 JSON数据格式 </span></div></div><div class="para"><div class="duanluo"><span>36</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/100.htm" target="right" class="orange">JSON，即 JS 对象标记，其是一种与语言无关的数据交互格式JSON，即 JS 对象标记，其是一种与语言无关的数据交互格式[JSON数据]，</a><span >它的数据格式不仅可以人为读写，也可通过机器来分析和产生。 </span><span >JSON 原本主要用于 JS 间的数据传输，但后来由于其独立于语言的特性逐渐发展成了一种跨语言的数据交换格式[24]。 </span><span >JSON 目前主要被 C、C++、C#、Java 和JavaScript等编程语言广泛使用。 </span><a href="../sentence_detail/104.htm" target="right" class="orange">JSON 中最常用的数据结构是数组和对象。</a><span >对象由键值对组成，该结构在不同的语言中实现也可能不同，如 Java 中用 Map 来表示、C#则用 Dictionary，表示数组和其他语言一样， </span><span >也是有序的，该结构在实现上也随着语言的不同而不同，比如 C++可能使用链表、而 Java 则使用 List。 </span></div><div class="modify" align="right" paraseq="35"><span class="btn btn-blue" onclick="submitPart('JSON，即 JS 对象标记，其是一种与语言无关的数据交互格式JSON，即 JS 对象标记，其是一种与语言无关的数据交互格式[JSON数据]，它的数据格式不仅可以人为读写，也可通过机器来分析和产生。JSON 原本主要用于 JS 间的数据传输，但后来由于其独立于语言的特性逐渐发展成了一种跨语言的数据交换格式[24]。JSON 目前主要被 C、C++、C#、Java 和JavaScript等编程语言广泛使用。JSON 中最常用的数据结构是数组和对象。对象由键值对组成，该结构在不同的语言中实现也可能不同，如 Java 中用 Map 来表示、C#则用 Dictionary，表示数组和其他语言一样，也是有序的，该结构在实现上也随着语言的不同而不同，比如 C++可能使用链表、而 Java 则使用 List。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>37</span></div><div class="l"><span style="margin-left:25px"></span><span >2.4 MySQL数据库 </span></div></div><div class="para"><div class="duanluo"><span>38</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/108.htm" target="right" class="red">MySQL目前属于Oracle甲骨文公司，MySQL称之为关系型数据库。</a><a href="../sentence_detail/109.htm" target="right" class="red">MySQL数据库能够支持在多种操作系统上运行，包括Solaris、Mac OS、FreeBSD和Windows，Linux通通支持。</a><span >核心功能就是处理数据，其中提供空间供数据存储又是其主要主要功能之一。 </span><a href="../sentence_detail/111.htm" target="right" class="red">数据库一般也不直接面向数据存储，存储是交给表/索引这类对象完成的。</a></div><div class="modify" align="right" paraseq="37"><span class="btn btn-blue" onclick="submitPart('MySQL目前属于Oracle甲骨文公司，MySQL称之为关系型数据库。MySQL数据库能够支持在多种操作系统上运行，包括Solaris、Mac OS、FreeBSD和Windows，Linux通通支持。核心功能就是处理数据，其中提供空间供数据存储又是其主要主要功能之一。数据库一般也不直接面向数据存储，存储是交给表/索引这类对象完成的。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>39</span></div><div class="l"><span style="margin-left:25px"></span><span >MySQL数据库是一种C/S模型（即客户端和服务端模型），客户端通过账号、密码来连接服务器， </span><span >连接成功之后才可以进行数据库的操作（CRUD：增加、删除、变更、查询）。 </span><a href="../sentence_detail/114.htm" target="right" class="red">MySQL的服务端采用IO复用 + 可伸缩的连接池，实现了网络高并发的经典模型。</a></div><div class="modify" align="right" paraseq="38"><span class="btn btn-blue" onclick="submitPart('MySQL数据库是一种C/S模型（即客户端和服务端模型），客户端通过账号、密码来连接服务器，连接成功之后才可以进行数据库的操作（CRUD：增加、删除、变更、查询）。MySQL的服务端采用IO复用 + 可伸缩的连接池，实现了网络高并发的经典模型。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>40</span></div><div class="l"><span style="margin-left:25px"></span><span >2.5 C/S架构 </span></div></div><div class="para"><div class="duanluo"><span>41</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/116.htm" target="right" class="red">服务器-客户机，即Client-Server(C/S)结构。C/S结构通常采取两层结构。</a><a href="../sentence_detail/117.htm" target="right" class="red">服务器负责数据的管理，客户机负责完成与用户的交互任务。</a></div><div class="modify" align="right" paraseq="40"><span class="btn btn-blue" onclick="submitPart('服务器-客户机，即Client-Server(C/S)结构。C/S结构通常采取两层结构。服务器负责数据的管理，客户机负责完成与用户的交互任务。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>42</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/118.htm" target="right" class="red">客户机通过局域网与服务器相连，接受用户的请求，并通过网络向服务器提出请求，对数据库进行操作。</a><a href="../sentence_detail/119.htm" target="right" class="red">服务器接受客户机的请求，将数据提交给客户机，客户机将数据进行计算并将结果呈现给用户。</a><a href="../sentence_detail/120.htm" target="right" class="red">服务器还要提供完善安全保护及对数据完整性的处理等操作，并允许多个客户机同时访问服务器，这就对服务器的硬件处理数据能力提出了很高的要求。</a></div><div class="modify" align="right" paraseq="41"><span class="btn btn-blue" onclick="submitPart('客户机通过局域网与服务器相连，接受用户的请求，并通过网络向服务器提出请求，对数据库进行操作。服务器接受客户机的请求，将数据提交给客户机，客户机将数据进行计算并将结果呈现给用户。服务器还要提供完善安全保护及对数据完整性的处理等操作，并允许多个客户机同时访问服务器，这就对服务器的硬件处理数据能力提出了很高的要求。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>43</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/121.htm" target="right" class="red">在C/S结构中，应用程序分为两部分:服务器部分和客户机部分。</a><a href="../sentence_detail/122.htm" target="right" class="red">服务器部分是多个用户共享的信息与功能，执行后台服务，如控制共享数据库的操作等;</a><a href="../sentence_detail/123.htm" target="right" class="red">客户机部分为用户所专有，负责执行前台功能，在出错提示、在线帮助等方面都有强大的功能，并且可以在子程序间自由切换。</a></div><div class="modify" align="right" paraseq="42"><span class="btn btn-blue" onclick="submitPart('在C/S结构中，应用程序分为两部分:服务器部分和客户机部分。服务器部分是多个用户共享的信息与功能，执行后台服务，如控制共享数据库的操作等;客户机部分为用户所专有，负责执行前台功能，在出错提示、在线帮助等方面都有强大的功能，并且可以在子程序间自由切换。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>44</span></div><div class="l"><span style="margin-left:25px"></span><span >2.6微信小程序 </span></div></div><div class="para"><div class="duanluo"><span>45</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/125.htm" target="right" class="red">微信小程序，简称小程序，英文名Mini Program，是一种不需要下载安装即可使用的应用，它实现了应用&quot;触手可及&rdquo;的梦想，</a><span >用户扫一扫或搜一下即可打开应用。 </span><a href="../sentence_detail/127.htm" target="right" class="red">小程序是一种不用下载就能使用的应用，也是一项门槛非常高的创新，经过将近两年的发展，已经构造了新的小程序开发环境和开发者生态。</a></div><div class="modify" align="right" paraseq="44"><span class="btn btn-blue" onclick="submitPart('微信小程序，简称小程序，英文名Mini Program，是一种不需要下载安装即可使用的应用，它实现了应用&quot;触手可及&rdquo;的梦想，用户扫一扫或搜一下即可打开应用。小程序是一种不用下载就能使用的应用，也是一项门槛非常高的创新，经过将近两年的发展，已经构造了新的小程序开发环境和开发者生态。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>46</span></div><div class="l"><span style="margin-left:25px"></span><span >3 系统需求分析 </span></div></div><div class="para"><div class="duanluo"><span>47</span></div><div class="l"><span style="margin-left:25px"></span><span >3.1 需求概述 </span></div></div><div class="para"><div class="duanluo"><span>48</span></div><div class="l"><span style="margin-left:25px"></span><span >在对项目进行设计步骤前，首先要弄清两个方面的信息，一个是产品特点，另一个是用户特征，在此基础上才能对项目进行准确清晰的需求分析。 </span><span >在充分了解了产品所需要的的功能后，对产品进行分析以及之后的设计方案，才是最符合课题要求的。 </span></div><div class="modify" align="right" paraseq="47"><span class="btn btn-blue" onclick="submitPart('在对项目进行设计步骤前，首先要弄清两个方面的信息，一个是产品特点，另一个是用户特征，在此基础上才能对项目进行准确清晰的需求分析。在充分了解了产品所需要的的功能后，对产品进行分析以及之后的设计方案，才是最符合课题要求的。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>49</span></div><div class="l"><span style="margin-left:25px"></span><span >3.1.1 产品特点分析 </span></div></div><div class="para"><div class="duanluo"><span>50</span></div><div class="l"><span style="margin-left:25px"></span><span >正如第一章所提及到的，本设计的主旨是为广大养宠物的用户提供一个方便交流与分享宠物信息的社交平台，这句话的三个关键词是：&quot;方便&rdquo;，&quot;分享&rdquo;和&quot;社交&rdquo;。 </span><span >针对这三个方面，可以针对总体的需求从以下几个方面展开。 </span></div><div class="modify" align="right" paraseq="49"><span class="btn btn-blue" onclick="submitPart('正如第一章所提及到的，本设计的主旨是为广大养宠物的用户提供一个方便交流与分享宠物信息的社交平台，这句话的三个关键词是：&quot;方便&rdquo;，&quot;分享&rdquo;和&quot;社交&rdquo;。针对这三个方面，可以针对总体的需求从以下几个方面展开。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>51</span></div><div class="l"><span style="margin-left:25px"></span><span >(1)平台的选择，随着移动设备和网络通讯技术的迅速迭代发展，2017年发展迅速的微信小程序出现在大众视线中，截止到2019年第一季度， </span><span >微信的使用用户已经达到了11亿，微信小程序以微信这一聊天社交软件作为载体，潜在的使用用户是十分庞大的。 </span><a href="../sentence_detail/137.htm" target="right" class="orange">微信小程序是一种轻型App，它不需要下载，用户使用完就可以退出关闭，具有发布信息，发布广告和服务功能[微信小程序的媒体价值]。</a><span >它不局限于移动设备的操作系统类型，无论是Android操作系统，ios操作系统还是windows操作系统的移动设备，只要下载了微信， </span><span >都可以通过微信打开小程序，随用随打开，用完即走。 </span><span >所以使用微信小程序平台作为宠物社交平台的客户端平台，不仅降低了宠物社交平台的开发成本，提高了宠物社交平台运行的稳定性， </span><span >还为宠物社交平台提供了巨大的潜在用户。 </span></div><div class="modify" align="right" paraseq="50"><span class="btn btn-blue" onclick="submitPart('(1)平台的选择，随着移动设备和网络通讯技术的迅速迭代发展，2017年发展迅速的微信小程序出现在大众视线中，截止到2019年第一季度，微信的使用用户已经达到了11亿，微信小程序以微信这一聊天社交软件作为载体，潜在的使用用户是十分庞大的。微信小程序是一种轻型App，它不需要下载，用户使用完就可以退出关闭，具有发布信息，发布广告和服务功能[微信小程序的媒体价值]。它不局限于移动设备的操作系统类型，无论是Android操作系统，ios操作系统还是windows操作系统的移动设备，只要下载了微信，都可以通过微信打开小程序，随用随打开，用完即走。所以使用微信小程序平台作为宠物社交平台的客户端平台，不仅降低了宠物社交平台的开发成本，提高了宠物社交平台运行的稳定性，还为宠物社交平台提供了巨大的潜在用户。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>52</span></div><div class="l"><span style="margin-left:25px"></span><span >(2)社交平台通常采用的交流方式是在线聊天，宠物社交平台的特点就是为喜欢宠物的用户们提供一个社交平台， </span><span >通过宠物这一媒介为不同地区的用户交流彼此的养宠经验，分享自己的爱宠动态。 </span><span >所以宠物社交平台在提供在线聊天功能的基础上，还提供了发布动态功能，类似于微信的朋友圈功能，用户不仅可以发布自己宠物的图片或者视频， </span><span >还能看到其他用户分享的动态内容，通过分享自己宠物动态的形式，和其他用户进行交流，满足了用户想要分享自己爱宠的需求。 </span></div><div class="modify" align="right" paraseq="51"><span class="btn btn-blue" onclick="submitPart('(2)社交平台通常采用的交流方式是在线聊天，宠物社交平台的特点就是为喜欢宠物的用户们提供一个社交平台，通过宠物这一媒介为不同地区的用户交流彼此的养宠经验，分享自己的爱宠动态。所以宠物社交平台在提供在线聊天功能的基础上，还提供了发布动态功能，类似于微信的朋友圈功能，用户不仅可以发布自己宠物的图片或者视频，还能看到其他用户分享的动态内容，通过分享自己宠物动态的形式，和其他用户进行交流，满足了用户想要分享自己爱宠的需求。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>53</span></div><div class="l"><span style="margin-left:25px"></span><span >(3)有许多想要养宠物的用户想要通过一个平台去了解宠物信息，宠物社交平台针对这一用户群体，特意设计了宠物百科， </span><span >宠物知识介绍等模块向想要了解宠物信息的用户提供了一个渠道，宠物百科里面包含了常见的宠物种类以及品种，详细介绍了不同种类宠物的特点以及生活习性。 </span><span >在宠物知识介绍里，介绍了一些在日常生活中宠物会出现的一些问题以及如何去解决这个问题的方法。 </span><span >想要养宠物的用户可以通过这些功能模块初步了解宠物信息，进而找到自己想要养的宠物类型。 </span></div><div class="modify" align="right" paraseq="52"><span class="btn btn-blue" onclick="submitPart('(3)有许多想要养宠物的用户想要通过一个平台去了解宠物信息，宠物社交平台针对这一用户群体，特意设计了宠物百科，宠物知识介绍等模块向想要了解宠物信息的用户提供了一个渠道，宠物百科里面包含了常见的宠物种类以及品种，详细介绍了不同种类宠物的特点以及生活习性。在宠物知识介绍里，介绍了一些在日常生活中宠物会出现的一些问题以及如何去解决这个问题的方法。想要养宠物的用户可以通过这些功能模块初步了解宠物信息，进而找到自己想要养的宠物类型。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>54</span></div><div class="l"><span style="margin-left:25px"></span><span >(4)宠物是宠物社交平台的核心，许多用户平时对宠物的花费主要在食物，护理和医疗方面，针对这一方面，宠物社交平台提供了记账本功能， </span><span >方便用户记录每一次的花费。 </span><span >微信小程序开放了地理位置功能，宠物社交平台可以通过这一点，为用户就近搜索到附件的宠物医院，宠物店等。 </span></div><div class="modify" align="right" paraseq="53"><span class="btn btn-blue" onclick="submitPart('(4)宠物是宠物社交平台的核心，许多用户平时对宠物的花费主要在食物，护理和医疗方面，针对这一方面，宠物社交平台提供了记账本功能，方便用户记录每一次的花费。微信小程序开放了地理位置功能，宠物社交平台可以通过这一点，为用户就近搜索到附件的宠物医院，宠物店等。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>55</span></div><div class="l"><span style="margin-left:25px"></span><span >3.1.2 用户特点分析 </span></div></div><div class="para"><div class="duanluo"><span>56</span></div><div class="l"><span style="margin-left:25px"></span><span >宠物社交平台针对的用户主要分为两种，一种是已经有宠物的用户，另外一种是暂时还没有宠物的用户，不同特点的用户也应该区别分析。 </span></div><div class="modify" align="right" paraseq="55"><span class="btn btn-blue" onclick="submitPart('宠物社交平台针对的用户主要分为两种，一种是已经有宠物的用户，另外一种是暂时还没有宠物的用户，不同特点的用户也应该区别分析。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>57</span></div><div class="l"><span style="margin-left:25px"></span><span >(1)有宠物的用户绝大部分的需求是分享动态，交流经验，发布问题等，作为微信小程序形态，所以这些功能不仅需要有，对于排版布局的要求可能也会不同。 </span></div><div class="modify" align="right" paraseq="56"><span class="btn btn-blue" onclick="submitPart('(1)有宠物的用户绝大部分的需求是分享动态，交流经验，发布问题等，作为微信小程序形态，所以这些功能不仅需要有，对于排版布局的要求可能也会不同。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>58</span></div><div class="l"><span style="margin-left:25px"></span><span >(2)对于没有宠物的用户，除了上述等基本功能外，还需要有介绍引导性的功能模块。 </span></div><div class="modify" align="right" paraseq="57"><span class="btn btn-blue" onclick="submitPart('(2)对于没有宠物的用户，除了上述等基本功能外，还需要有介绍引导性的功能模块。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>59</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2 功能性需求 </span></div></div><div class="para"><div class="duanluo"><span>60</span></div><div class="l"><span style="margin-left:25px"></span><span >通过上述需求分析，确定了用户主要通过平台分享宠物信息，和其他用户进行交流。 </span><span >确定了本系统的用例图如图3.1所示： </span></div><div class="modify" align="right" paraseq="59"><span class="btn btn-blue" onclick="submitPart('通过上述需求分析，确定了用户主要通过平台分享宠物信息，和其他用户进行交流。确定了本系统的用例图如图3.1所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>61</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2.1 用户登录注册 </span></div></div><div class="para"><div class="duanluo"><span>62</span></div><div class="l"><span style="margin-left:25px"></span><span >新用户进入平台时要注册账号，需要用真实手机号进行注册，需要用手机号接收验证码进行注册。 </span><a href="../sentence_detail/162.htm" target="right" class="orange">用户登录的方式有两种，分别是手机号密码登录和手机号验证码登录。</a></div><div class="modify" align="right" paraseq="61"><span class="btn btn-blue" onclick="submitPart('新用户进入平台时要注册账号，需要用真实手机号进行注册，需要用手机号接收验证码进行注册。用户登录的方式有两种，分别是手机号密码登录和手机号验证码登录。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>63</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2.2 宠物信息功能 </span></div></div><div class="para"><div class="duanluo"><span>64</span></div><div class="l"><span style="margin-left:25px"></span><span >用户进入平台后，可以添加自己的宠物信息，包括宠物的品种，头像，性别，年龄等等。 </span><span >每个用户可以添加多个宠物信息。 </span></div><div class="modify" align="right" paraseq="63"><span class="btn btn-blue" onclick="submitPart('用户进入平台后，可以添加自己的宠物信息，包括宠物的品种，头像，性别，年龄等等。每个用户可以添加多个宠物信息。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>65</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2.3 宠物百科 </span></div></div><div class="para"><div class="duanluo"><span>66</span></div><div class="l"><span style="margin-left:25px"></span><span >对常见的宠物进行信息收集，包括犬科，猫科，兔类，鼠类，龟类，鱼类，爬行类，鸟类等。 </span></div><div class="modify" align="right" paraseq="65"><span class="btn btn-blue" onclick="submitPart('对常见的宠物进行信息收集，包括犬科，猫科，兔类，鼠类，龟类，鱼类，爬行类，鸟类等。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>67</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2.4 宠物常见问题 </span></div></div><div class="para"><div class="duanluo"><span>68</span></div><div class="l"><span style="margin-left:25px"></span><span >针对宠物日常出现的问题，包括健康问题，饮食习惯，性格培养，技能练习收集相关的科普知识文章， </span></div><div class="modify" align="right" paraseq="67"><span class="btn btn-blue" onclick="submitPart('针对宠物日常出现的问题，包括健康问题，饮食习惯，性格培养，技能练习收集相关的科普知识文章，',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>69</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2.5 宠物服务商家定位 </span></div></div><div class="para"><div class="duanluo"><span>70</span></div><div class="l"><span style="margin-left:25px"></span><span >经过用户授权同意后，获取用户的地理位置，对用户所处的周边地区进行宠物服务商家定位，比如宠物医院，宠物护理店，宠物商品店等。 </span></div><div class="modify" align="right" paraseq="69"><span class="btn btn-blue" onclick="submitPart('经过用户授权同意后，获取用户的地理位置，对用户所处的周边地区进行宠物服务商家定位，比如宠物医院，宠物护理店，宠物商品店等。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>71</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2.6 社区动态需求 </span></div></div><div class="para"><div class="duanluo"><span>72</span></div><div class="l"><span style="margin-left:25px"></span><span >用户在社区可以看到其他用户发布的动态，动态内容可以是文字，图片和视频等类型，社区不限制用户权限，采取每个用户都能看到其他用户动态内容的形式， </span><span >用户可以评论和点赞其他用户的评论。 </span><span >用户可以看到发布动态的用户的个人信息，可以关注其他用户，可以和其他用户进行一对一聊天。 </span></div><div class="modify" align="right" paraseq="71"><span class="btn btn-blue" onclick="submitPart('用户在社区可以看到其他用户发布的动态，动态内容可以是文字，图片和视频等类型，社区不限制用户权限，采取每个用户都能看到其他用户动态内容的形式，用户可以评论和点赞其他用户的评论。用户可以看到发布动态的用户的个人信息，可以关注其他用户，可以和其他用户进行一对一聊天。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>73</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2.7 发布动态 </span></div></div><div class="para"><div class="duanluo"><span>74</span></div><div class="l"><span style="margin-left:25px"></span><span >每个用户可以在社区模块界面发布动态，动态内容可以是文字，图片和视频。 </span></div><div class="modify" align="right" paraseq="73"><span class="btn btn-blue" onclick="submitPart('每个用户可以在社区模块界面发布动态，动态内容可以是文字，图片和视频。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>75</span></div><div class="l"><span style="margin-left:25px"></span><span >3.2.8 个人中心 </span></div></div><div class="para"><div class="duanluo"><span>76</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/179.htm" target="right" class="orange">用户个人中心包括个人信息，我的宠物，我的动态，我的关注，我的收藏，退出登录等模块，</a></div><div class="modify" align="right" paraseq="75"><span class="btn btn-blue" onclick="submitPart('用户个人中心包括个人信息，我的宠物，我的动态，我的关注，我的收藏，退出登录等模块，',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>77</span></div><div class="l"><span style="margin-left:25px"></span><span >用户在个人信息模块中修改自己的个人信息，包括昵称，性别和地区。 </span><span >我的宠物模块可以查看，修改或新增用户的宠物信息。 </span><span >我的动态模块中保存了用户之前发布的动态，包括图片动态和视频动态。 </span><span >我的关注模块里可以查看和取消用户已经关注的其他用户，可以和已关注用户进行私聊，可以查看已关注用户的个人信息。 </span><span >我的收藏模块记录了当前用户点赞的其他用户已发布动态，用户可以取消点赞或者查看该点赞动态详情。 </span><span >退出登录模块可以让当前用户退出宠物社交平台，回到登录页面。 </span></div><div class="modify" align="right" paraseq="76"><span class="btn btn-blue" onclick="submitPart('用户在个人信息模块中修改自己的个人信息，包括昵称，性别和地区。我的宠物模块可以查看，修改或新增用户的宠物信息。我的动态模块中保存了用户之前发布的动态，包括图片动态和视频动态。我的关注模块里可以查看和取消用户已经关注的其他用户，可以和已关注用户进行私聊，可以查看已关注用户的个人信息。我的收藏模块记录了当前用户点赞的其他用户已发布动态，用户可以取消点赞或者查看该点赞动态详情。退出登录模块可以让当前用户退出宠物社交平台，回到登录页面。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>78</span></div><div class="l"><span style="margin-left:25px"></span><span >3.3 非功能性需求 </span></div></div><div class="para"><div class="duanluo"><span>79</span></div><div class="l"><span style="margin-left:25px"></span><span >(1)易用性 </span></div></div><div class="para"><div class="duanluo"><span>80</span></div><div class="l"><span style="margin-left:25px"></span><span >系统界面设计一定要遵循易用性原则，系统界面要简单易用，不要设计太复杂的界面， </span></div><div class="modify" align="right" paraseq="79"><span class="btn btn-blue" onclick="submitPart('系统界面设计一定要遵循易用性原则，系统界面要简单易用，不要设计太复杂的界面，',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>81</span></div><div class="l"><span style="margin-left:25px"></span><span >只有简单易用的操作界面才能让用户更方便使用。 </span></div></div><div class="para"><div class="duanluo"><span>82</span></div><div class="l"><span style="margin-left:25px"></span><span >(2)可扩展性 </span></div></div><div class="para"><div class="duanluo"><span>83</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/191.htm" target="right" class="orange">系统设计需要具有良好的可扩展性，本系统功能肯定没有涵盖宠物社交平台所有需要具备的功能,在以后系统运行中，会根据不同情况的需求对系统进行修改和完善。</a><span >由于条件限制，许多功能还暂时没有实现。 </span></div><div class="modify" align="right" paraseq="82"><span class="btn btn-blue" onclick="submitPart('系统设计需要具有良好的可扩展性，本系统功能肯定没有涵盖宠物社交平台所有需要具备的功能,在以后系统运行中，会根据不同情况的需求对系统进行修改和完善。由于条件限制，许多功能还暂时没有实现。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>84</span></div><div class="l"><span style="margin-left:25px"></span><span >(3)性能需求 </span></div></div><div class="para"><div class="duanluo"><span>85</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/194.htm" target="right" class="orange">小程序单个分包不能超过2M,所以要限制源代码包的大小，将一些比较大的静态图片和文件进行压缩，避免用户首次加载小程序的时候出现等待时间过长的现象，</a><span >对于加载数据量比较大的模块要采取懒加载或者分页加载等形式进行。 </span></div><div class="modify" align="right" paraseq="84"><span class="btn btn-blue" onclick="submitPart('小程序单个分包不能超过2M,所以要限制源代码包的大小，将一些比较大的静态图片和文件进行压缩，避免用户首次加载小程序的时候出现等待时间过长的现象，对于加载数据量比较大的模块要采取懒加载或者分页加载等形式进行。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>86</span></div><div class="l"><span style="margin-left:25px"></span><span >4 系统设计 </span></div></div><div class="para"><div class="duanluo"><span>87</span></div><div class="l"><span style="margin-left:25px"></span><span >系统设计主要从物理层和逻辑层两方面来考虑。 </span><span >其中物理层决定系统架构，逻辑层决定系统功能实现的思路。 </span><span >系统设计是整个工作的前提和基础，决定了整个系统的框架结构和系统功能的实现步骤与逻辑，设计的优劣会影响系统整体质量和功能实现情况。 </span><span >本系统设计主要从基本设计原则、物理架构设计和逻辑设计三个方面展开。 </span></div><div class="modify" align="right" paraseq="86"><span class="btn btn-blue" onclick="submitPart('系统设计主要从物理层和逻辑层两方面来考虑。其中物理层决定系统架构，逻辑层决定系统功能实现的思路。系统设计是整个工作的前提和基础，决定了整个系统的框架结构和系统功能的实现步骤与逻辑，设计的优劣会影响系统整体质量和功能实现情况。本系统设计主要从基本设计原则、物理架构设计和逻辑设计三个方面展开。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>88</span></div><div class="l"><span style="margin-left:25px"></span><span >4.1 系统设计基本原则 </span></div></div><div class="para"><div class="duanluo"><span>89</span></div><div class="l"><span style="margin-left:25px"></span><span >(1)简易性原则 </span></div></div><div class="para"><div class="duanluo"><span>90</span></div><div class="l"><span style="margin-left:25px"></span><span >简单易操作的界面可以保证用户们操作本系统的正确率和流畅性，大大减少用户因操作上而造成的食物。 </span><span >与此同时，合适的颜色搭配可以提高用户的使用体验。 </span></div><div class="modify" align="right" paraseq="89"><span class="btn btn-blue" onclick="submitPart('简单易操作的界面可以保证用户们操作本系统的正确率和流畅性，大大减少用户因操作上而造成的食物。与此同时，合适的颜色搭配可以提高用户的使用体验。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>91</span></div><div class="l"><span style="margin-left:25px"></span><span >(2)模块化设计原则 </span></div></div><div class="para"><div class="duanluo"><span>92</span></div><div class="l"><span style="margin-left:25px"></span><span >对系统进行细化和分解，将其分解成许多个内在联系强、相对独立的小模块，每个小模块各司其职，实现系统不同的功能，随后再对每个小模块进行单独设计与开发， </span><span >让设计变得简单。 </span></div><div class="modify" align="right" paraseq="91"><span class="btn btn-blue" onclick="submitPart('对系统进行细化和分解，将其分解成许多个内在联系强、相对独立的小模块，每个小模块各司其职，实现系统不同的功能，随后再对每个小模块进行单独设计与开发，让设计变得简单。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>93</span></div><div class="l"><span style="margin-left:25px"></span><span >4.2 系统物理架构设计 </span></div></div><div class="para"><div class="duanluo"><span>94</span></div><div class="l"><span style="margin-left:25px"></span><span >本系统的物理架构主要由用户移动终端、移动互联网络(2G/3G/4G/5G网络、WIFI等)、微信服务器、互联网、信息交互系统五大部分组成， </span><span >其主要结构如图4.1所示： </span></div><div class="modify" align="right" paraseq="93"><span class="btn btn-blue" onclick="submitPart('本系统的物理架构主要由用户移动终端、移动互联网络(2G/3G/4G/5G网络、WIFI等)、微信服务器、互联网、信息交互系统五大部分组成，其主要结构如图4.1所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>95</span></div><div class="l"><span style="margin-left:25px"></span><span >其中用户智能移动终端不仅仅是手机，像平板电脑和PC端等，只要可以连接移动互联网并且可以登录微信都可以应用于本系统。 </span><span >其中， </span><span >移动互联网络(2G/3G/4G/5G网络、WIFI等)是用户与微信之间沟通的桥梁，而微信服务器是腾讯公司官方提供的，不需要我们去准备， </span><span >而微信服务器作为一个&quot;中转站&rdquo;为用户提供了许多用于登录微信的接口。 </span><span >微信服务器会通过互联网与本系统自身的服务器相连接，因此本系统的数据是直接存储在系统自身的服务器上的。 </span></div><div class="modify" align="right" paraseq="94"><span class="btn btn-blue" onclick="submitPart('其中用户智能移动终端不仅仅是手机，像平板电脑和PC端等，只要可以连接移动互联网并且可以登录微信都可以应用于本系统。其中，移动互联网络(2G/3G/4G/5G网络、WIFI等)是用户与微信之间沟通的桥梁，而微信服务器是腾讯公司官方提供的，不需要我们去准备，而微信服务器作为一个&quot;中转站&rdquo;为用户提供了许多用于登录微信的接口。微信服务器会通过互联网与本系统自身的服务器相连接，因此本系统的数据是直接存储在系统自身的服务器上的。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>96</span></div><div class="l"><span style="margin-left:25px"></span><span >本系统信息交互流程主要如图4.2所示： </span></div></div><div class="para"><div class="duanluo"><span>97</span></div><div class="l"><span style="margin-left:25px"></span><span >从图中可以得知，用户先通过微信客户端发送信息给微信小程序，微信小程序接收到信息后会发送到微信主服务器，主服务器接收到信息后， </span><span >会自动将信息封装成JSON格式发送给小程序所对应的第三方服务器进行数据处理，完成处理后第三方服务器将信息封装成JSON格式数据返回给微信服务器， </span><span >再由微信服务器返回给小程序，最终发送给用户的移动终端。 </span></div><div class="modify" align="right" paraseq="96"><span class="btn btn-blue" onclick="submitPart('从图中可以得知，用户先通过微信客户端发送信息给微信小程序，微信小程序接收到信息后会发送到微信主服务器，主服务器接收到信息后，会自动将信息封装成JSON格式发送给小程序所对应的第三方服务器进行数据处理，完成处理后第三方服务器将信息封装成JSON格式数据返回给微信服务器，再由微信服务器返回给小程序，最终发送给用户的移动终端。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>98</span></div><div class="l"><span style="margin-left:25px"></span><span >4.3 系统逻辑架构设计 </span></div></div><div class="para"><div class="duanluo"><span>99</span></div><div class="l"><span style="margin-left:25px"></span><span >系统的正常运行需要后台的支持和对数据进行预处理，系统总体逻辑框架图如4.3所示： </span></div><div class="modify" align="right" paraseq="98"><span class="btn btn-blue" onclick="submitPart('系统的正常运行需要后台的支持和对数据进行预处理，系统总体逻辑框架图如4.3所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>100</span></div><div class="l"><span style="margin-left:25px"></span><span >系统使用的是C/S架构，主要分为以下三方面。 </span></div></div><div class="para"><div class="duanluo"><span>101</span></div><div class="l"><span style="margin-left:25px"></span><a href="../sentence_detail/223.htm" target="right" class="orange">表示层(UI)。表示层是用户进入本系统的入口，为用户和系统之间提供了接口。</a><span >在本系统中，表示层主要是微信小程序客户端。 </span></div><div class="modify" align="right" paraseq="100"><span class="btn btn-blue" onclick="submitPart('表示层(UI)。表示层是用户进入本系统的入口，为用户和系统之间提供了接口。在本系统中，表示层主要是微信小程序客户端。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>102</span></div><div class="l"><span style="margin-left:25px"></span><span >业务逻辑层(BLL)。本系统的业务逻辑层主要由微信服务器和系统服务器两部分组成。 </span></div><div class="modify" align="right" paraseq="101"><span class="btn btn-blue" onclick="submitPart('业务逻辑层(BLL)。本系统的业务逻辑层主要由微信服务器和系统服务器两部分组成。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>103</span></div><div class="l"><span style="margin-left:25px"></span><span >逻辑层不参与微信小程序的前端展示，逻辑层会对前端返回的数据进行处理。 </span><span >在本系统中，业务逻辑层主要是根据用户发送的请求选择对应的模块进行调用。 </span></div><div class="modify" align="right" paraseq="102"><span class="btn btn-blue" onclick="submitPart('逻辑层不参与微信小程序的前端展示，逻辑层会对前端返回的数据进行处理。在本系统中，业务逻辑层主要是根据用户发送的请求选择对应的模块进行调用。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>104</span></div><div class="l"><span style="margin-left:25px"></span><span >数据访问层(DAL)。数据访问层是系统中最关键和最重要的一层。数据是系统稳定运行的基础。 </span><span >数据访问层接收到的数据主要分为两类，一类为持久化数据，这类数据需要在数据库中长期保存，另一类是非持久数据，这类数据通常是一些中间数据， </span><span >作为计算机处理数据的一个中间值。 </span><span >数据访问层主要执行数据的存储和提取等问题。 </span></div><div class="modify" align="right" paraseq="103"><span class="btn btn-blue" onclick="submitPart('数据访问层(DAL)。数据访问层是系统中最关键和最重要的一层。数据是系统稳定运行的基础。数据访问层接收到的数据主要分为两类，一类为持久化数据，这类数据需要在数据库中长期保存，另一类是非持久数据，这类数据通常是一些中间数据，作为计算机处理数据的一个中间值。数据访问层主要执行数据的存储和提取等问题。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>105</span></div><div class="l"><span style="margin-left:25px"></span><span >4.4 系统功能设计 </span></div></div><div class="para"><div class="duanluo"><span>106</span></div><div class="l"><span style="margin-left:25px"></span><span >在需求分析阶段已经了解了系统的任务是什么，根据需求分析的内容，将系统拆解成各个功能模块，明确各个模块之间的联系及接口定义。 </span><a href="../sentence_detail/234.htm" target="right" class="orange">同时在系统数据需求的基础上，设计出相应的数据库。系统功能模块图如图4.4所示：</a></div><div class="modify" align="right" paraseq="105"><span class="btn btn-blue" onclick="submitPart('在需求分析阶段已经了解了系统的任务是什么，根据需求分析的内容，将系统拆解成各个功能模块，明确各个模块之间的联系及接口定义。同时在系统数据需求的基础上，设计出相应的数据库。系统功能模块图如图4.4所示：',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>107</span></div><div class="l"><span style="margin-left:25px"></span><span >(1)登录注册模块 </span></div></div><div class="para"><div class="duanluo"><span>108</span></div><div class="l"><span style="margin-left:25px"></span><span >用户初次使用本系统时，需要进行注册，注册需要使用手机号码和手机验证码，验证通过后用户需要设置密码，确认密码后用户就可以登录进入本系统了。 </span><span >已经注册过的用户，可以通过手机号码和密码登录或者手机号码和手机验证码登录，验证通过后进入本系统。 </span></div><div class="modify" align="right" paraseq="107"><span class="btn btn-blue" onclick="submitPart('用户初次使用本系统时，需要进行注册，注册需要使用手机号码和手机验证码，验证通过后用户需要设置密码，确认密码后用户就可以登录进入本系统了。已经注册过的用户，可以通过手机号码和密码登录或者手机号码和手机验证码登录，验证通过后进入本系统。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>109</span></div><div class="l"><span style="margin-left:25px"></span><span >(2)用户信息管理模块 </span></div></div><div class="para"><div class="duanluo"><span>110</span></div><div class="l"><span style="margin-left:25px"></span><span >用户基本信息包括用户的昵称，头像，性别，地区等，用户初次登入系统时会随机设置基本信息，用户可以在个人中心修改基本信息。 </span><span >除了基本信息外，还有用户宠物，用户动态，用户收藏，用户关注等信息。 </span></div><div class="modify" align="right" paraseq="109"><span class="btn btn-blue" onclick="submitPart('用户基本信息包括用户的昵称，头像，性别，地区等，用户初次登入系统时会随机设置基本信息，用户可以在个人中心修改基本信息。除了基本信息外，还有用户宠物，用户动态，用户收藏，用户关注等信息。',this)" class="modify">段落修改</div></div><div class="para"><div class="duanluo"><span>111</span></div><div class="l"><span style="margin-left:25px"></span><span >(3)宠物信息管理模块 </span></div></div><div align="center" class="navigation"><a href="paper_1.htm"><span class="btn_gray">首页</span></a><a  href="#"><span class="btn_gray">上一页</span></a><a href="paper_2.htm"><span class="btn_gray">下一页</span></a><a href="paper_2.htm">	<span class="btn_gray">尾页</span></a><span>页码：1/2页</span></div><div class="footer"><div align="center" class="a666" style="font-size:14px;padding-top:50px;padding-bottom:30px;"><div>检测报告由 <a class="nounderline" href="http://www.ptcheck.com" target="_blank">PTcheck</a>文献相似度检测系统生成 </div><div>Copyright © 2007-2018 PTcheck </div></div></div></div></body></html>
