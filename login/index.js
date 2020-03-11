@@ -149,7 +149,7 @@ class Login {
             else {
                 reject({
                     code: -2,
-                    message: '验证码错误'
+                    message: '密码错误'
                 });
             }
         })

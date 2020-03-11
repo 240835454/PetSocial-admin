@@ -5,13 +5,13 @@
  * @Date: 2020-01-13 17:04:54
  * @LastEditors: TanXinFeng
  * @LastEditTime: 2020-03-10 13:32:31
- */  
-const Koa = require('koa')
-const Router = require('koa-router') 
-const router = new Router();
+ */   
+const Koa = require('koa')     
+const Router = require('koa-router')   
+const router = new Router();   
 const bodyParser = require('koa-bodyparser') 
 const app = new Koa();
-const koajwt = require('koa-jwt')  
+const koajwt = require('koa-jwt')   
 const static = require('koa-static')  
 const path = require('path')
 
