@@ -22,7 +22,7 @@ class Pet {
             let sql = "select * from pet where uid ="+uid;
             con.select(sql).then(res => {
                 resolve(res); 
-            })
+            }) 
         })
     }
 }

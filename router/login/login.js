@@ -86,7 +86,7 @@ const setPassword = async ctx => {
 
 // 登录
 const getLogin = async ctx => {
-    let {
+    let { 
         account,
         password,
         msgCaptcha
