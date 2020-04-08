@@ -2,47 +2,47 @@
  * @Description: 
  * @Version: 2.0
  * @Author: TanXinFeng
- * @Date: 2020-01-13 17:04:54
+ * @Date: 2020-01-13 17:04:54 
  * @LastEditors: TanXinFeng
- * @LastEditTime: 2020-03-10 13:32:31
+ * @LastEditTime: 2020-03-10 13:32:31 
  */   
-const Koa = require('koa')     
+const Koa = require('koa')      
 const Router = require('koa-router')   
-const router = new Router();   
-const bodyParser = require('koa-bodyparser') 
+const router = new Router();    
+const bodyParser = require('koa-bodyparser')  
 const app = new Koa();
 const koajwt = require('koa-jwt')   
-const static = require('koa-static')  
+const static = require('koa-static')   
 const path = require('path')
 
 const router_login = require('../router/login/login');
 const router_petbnb = require('../router/petbnb/petbnb');
 const router_user = require('../router/user/user');
 const router_upload = require('../public/uploadFile');
-const router_community = require('../router/communication/communication')
-
+const router_community = require('../router/communication/communication') 
 
 
  
   
   
-// 错误处理          
-app.use((ctx, next) => {
+   
+// 错误处理           
+app.use((ctx, next) => { 
   return next().catch((err) => {
     if (err.status === 401) {  
       ctx.status = 401; 
       ctx.body = 'Protected resource, use Authorization header to get access\n';
-    } else {
-      throw err; 
-    }   
-  }) 
-}) 
- 
-app.use(static(path.join(path.dirname(__dirname), './static')))
- 
-
+    } else {  
+      throw err;     
+    }  
+  })  
+})  
+  
+app.use(static(path.join(path.dirname(__dirname), './static')))  
+  
+   
 app.use(koajwt({ 
-  secret: 'my_token'
+  secret: 'my_token' 
 }).unless({
   path: [/\/API\/Login\/login/, /\/API\/Login\/register/, /\/API\/Login\/captcha/, /\/API\/Login\/setPassword/, /\/image/]
 })); 

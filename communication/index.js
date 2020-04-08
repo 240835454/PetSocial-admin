@@ -46,7 +46,7 @@ class Community {
                 resolve(res);
             })
         })
-    }
+    } 
 
     // 获取社区动态列表
     getDynamicList(index, pageSize) {
