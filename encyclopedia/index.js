@@ -24,7 +24,7 @@ const fs = require('fs');
 function getDogInfo(){
     return new Promise((resolve,reject)=>{
         axios.get('http://www.yc.cn/api/searchPetData.do?petRaceId=1&pageNum=1&pageSize=251&keyword=&baseInfo=&detailInfo=&')
-        .then(res=>{
+        .then(res=>{ 
             resolve(eval(res.data));
         })
         .catch(err=>{
