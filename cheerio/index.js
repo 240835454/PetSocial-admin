@@ -180,7 +180,7 @@ const fs = require('fs');
   // })
 
   // 鼠
-  await fs.writeFile('./qita.json',data,(err)=>{
+  await fs.writeFile('./aaa.json',data,(err)=>{
     if(err){
       throw err;
     }

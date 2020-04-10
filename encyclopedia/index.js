@@ -191,7 +191,7 @@ function getQitaInfo(){
 
 
 getQitaInfo().then(res=>{
-    fs.writeFileSync('./qitaInfo.json',JSON.stringify(res),(err)=>{
+    fs.writeFileSync('./aaaInfo.json',JSON.stringify(res),(err)=>{
         if(err){
             throw err;
         }

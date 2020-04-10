@@ -18,8 +18,14 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-let data = fs.readFileSync('../encyclopedia/dogInfo.json','utf8',(err,data)=>{
-    if(err){
+// let data = fs.readFileSync('../encyclopedia/dogInfo.json', 'utf8', (err, data) => {
+//     if (err) {
+//         throw err;
+//     }
+// })
+
+let data = fs.readFileSync('../featured/test.json', 'utf8', (err, data) => {
+    if (err) {
         throw err;
     }
 })
@@ -27,41 +33,53 @@ let data = fs.readFileSync('../encyclopedia/dogInfo.json','utf8',(err,data)=>{
 
 // let addSql = 'insert into qita(id,attentionInfo) values(0,?)';
 // let params = JSON.stringify(JSON.parse(data).list[0].attentionInfo);
-let dataList = JSON.parse(data).list;
+let dataList = JSON.parse(data).imgList;
 
 let info = [];
 
-for(let i =200;i<251;i++){
+for (let i = 0; i < dataList.length; i++) {
     info.push([
-        JSON.stringify(dataList[i].attentionInfo),
-        JSON.stringify(dataList[i].details),
-        dataList[i].woolColor,
-        dataList[i].fisrtWord,
-        JSON.stringify(dataList[i].baseData),
-        JSON.stringify(dataList[i].feedInfo),
-        dataList[i].petBreedId,
-        dataList[i].smallRace,
-        dataList[i].petRaceId,
-        JSON.stringify(dataList[i].breedInfo),
-        dataList[i].price,
-        JSON.stringify(dataList[i].baseInfo),
-        dataList[i].alisName,
-        dataList[i].showImage,
-        dataList[i].bodyType,
-        dataList[i].woolLength,
-        dataList[i].diseaseIds,
-        JSON.stringify(dataList[i].detail),
-        dataList[i].icon,
-        dataList[i].status,
-        dataList[i].name,
+        dataList[i].img,
+        dataList[i].title,
+        dataList[i].url,
+        dataList[i].content,
+        dataList[i].createDate,
     ])
 }
 
+// for (let i = 200; i < 251; i++) {
+//     info.push([
+//         JSON.stringify(dataList[i].attentionInfo),
+//         JSON.stringify(dataList[i].details),
+//         dataList[i].woolColor,
+//         dataList[i].fisrtWord,
+//         JSON.stringify(dataList[i].baseData),
+//         JSON.stringify(dataList[i].feedInfo),
+//         dataList[i].petBreedId,
+//         dataList[i].smallRace,
+//         dataList[i].petRaceId,
+//         JSON.stringify(dataList[i].breedInfo),
+//         dataList[i].price,
+//         JSON.stringify(dataList[i].baseInfo),
+//         dataList[i].alisName,
+//         dataList[i].showImage,
+//         dataList[i].bodyType,
+//         dataList[i].woolLength,
+//         dataList[i].diseaseIds,
+//         JSON.stringify(dataList[i].detail),
+//         dataList[i].icon,
+//         dataList[i].status,
+//         dataList[i].name,
+//     ])
+// }
 
-let addSql = "insert into qita(attentionInfo,details,woolColor,firstWord,baseData,feedInfo,petBreedId,smallRace,petRaceId,breedInfo,price,baseInfo,alisName,showImage,bodyType,woolLength,diseaseIds,detail,icon,status,name) values ?";
 
-connection.query(addSql,[info],function(err,result){
-    if(err){
+let addSql = "insert into article(img,title,url,content,createDate) values ?"
+
+// let addSql = "insert into qita(attentionInfo,details,woolColor,firstWord,baseData,feedInfo,petBreedId,smallRace,petRaceId,breedInfo,price,baseInfo,alisName,showImage,bodyType,woolLength,diseaseIds,detail,icon,status,name) values ?";
+
+connection.query(addSql, [info], function (err, result) {
+    if (err) {
         throw err;
     }
     console.log('插入成功!');
