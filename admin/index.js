@@ -36,7 +36,7 @@ app.use((ctx, next) => {
       throw err;     
     }  
   })  
-})  
+})   
   
 app.use(static(path.join(path.dirname(__dirname), './static')))  
   
@@ -59,4 +59,4 @@ app.use(router_community.routes()); //导入社区模块路由
  
 app.use(router.routes()).listen(3000, () => {
   console.log('3000端口已开启');
-})   
+})    
