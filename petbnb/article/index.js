@@ -24,6 +24,14 @@ class Article{
         })
         return Promise.all([p1, p2]);
     }
+    getArticleDetail(id){
+        return new Promise((resolve,reject)=>{
+            let sql = "select detail from article where a_id="+id;
+            con.select(sql).then(res => {
+                resolve(res);
+            })
+        })
+    }
 }
 
 module.exports = Article;

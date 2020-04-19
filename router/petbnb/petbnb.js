@@ -150,6 +150,19 @@ const getArticleList = async ctx => {
   })
 }
 
+// 获取文章详情
+const getArticleDetail = async ctx => {
+  let {id} = ctx.request.query; 
+  await article.getArticleDetail(id).then(res => {
+    ctx.body = {
+      code: 1,
+      data: {
+        ...res
+      }
+    }
+  })
+}
+
 function GetNumberOfDays(date1, date2) { //获得天数
   //date1：开始日期，date2结束日期
   var a1 = Date.parse(new Date(date1));
@@ -166,5 +179,7 @@ router.get('/API/petbnb/getPetList', getPetList)
 router.post('/API/petbnb/addAccount', addAccount)
 router.get('/API/petbnb/getAccountList', getAccountList)
 router.get('/API/petbnb/article/getArticleList',getArticleList)
+router.get('/API/petbnb/article/getArticleDetail',getArticleDetail)
+
 
 module.exports = router; 

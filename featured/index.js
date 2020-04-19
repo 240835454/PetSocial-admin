@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer');
 
 (async () => {
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: {
             width: 1920,
             height: 1080
@@ -13,7 +13,8 @@ const puppeteer = require('puppeteer');
 
     const page = await browser.newPage();
     await page.goto('https://www.ixiupet.com/zixun', {
-        waitUntil: 'networkidle2' //网络空闲说明已加载完毕
+        // waitUntil: 'networkidle2', //网络空闲说明已加载完毕
+        'timeout': 0 
     });
 
     console.log('前往目标网页');
