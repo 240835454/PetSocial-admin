@@ -31,9 +31,18 @@ let data = fs.readFileSync('../featured/test.json', 'utf8', (err, data) => {
 })
 
 
+let detail = fs.readFileSync('../featured/content.json', 'utf8', (err, data) => {
+    if (err) {
+        throw err;
+    }
+})
+
+
 // let addSql = 'insert into qita(id,attentionInfo) values(0,?)';
 // let params = JSON.stringify(JSON.parse(data).list[0].attentionInfo);
 let dataList = JSON.parse(data).imgList;
+
+let detailList = JSON.parse(detail);
 
 let info = [];
 
@@ -44,6 +53,7 @@ for (let i = 0; i < dataList.length; i++) {
         dataList[i].url,
         dataList[i].content,
         dataList[i].createDate,
+        detailList[i].content
     ])
 }
 
@@ -69,22 +79,23 @@ for (let i = 0; i < dataList.length; i++) {
 //         JSON.stringify(dataList[i].detail),
 //         dataList[i].icon,
 //         dataList[i].status,
-//         dataList[i].name,
+//         dataList[i].name, 
 //     ])
 // }
 
 
-let addSql = "insert into article(img,title,url,content,createDate) values ?"
+let addSql = "insert into article(img,title,url,content,createDate,detail) values ?"
 
 // let addSql = "insert into qita(attentionInfo,details,woolColor,firstWord,baseData,feedInfo,petBreedId,smallRace,petRaceId,breedInfo,price,baseInfo,alisName,showImage,bodyType,woolLength,diseaseIds,detail,icon,status,name) values ?";
 
-connection.query(addSql, [info], function (err, result) {
+connection.query(addSql, [info],function (err, result) {
+    console.log('开始插入')
     if (err) {
-        throw err;
+        throw err; 
     }
     console.log('插入成功!');
 })
-
+ 
 // let sql = 'select * from qita';
 
 // let result = connection.query(sql,function(err,result){
