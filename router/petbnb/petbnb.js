@@ -163,6 +163,31 @@ const getArticleDetail = async ctx => {
   })
 }
 
+// 获取宠物详情
+const getPetDetail = async ctx => {
+  let {pid} = ctx.request.query;
+  await pet.getPetDetail(pid).then(res => {
+    ctx.body = {
+      code: 1,
+      data: {
+        ...res[0]
+      }
+    }
+  })
+}
+
+// 修改宠物详情
+const updatePetDetail = async ctx => {
+  let {pid, name, gender, birthDay, avatar, breed, state} = ctx.request.body;
+  await pet.updatePetDetail(pid, name, gender, birthDay, avatar, breed, state).then(res => {
+    ctx.body = {
+      code: 1,
+      data:{},
+      message: '修改成功!'
+    }
+  })
+}
+
 function GetNumberOfDays(date1, date2) { //获得天数
   //date1：开始日期，date2结束日期
   var a1 = Date.parse(new Date(date1));
@@ -180,6 +205,9 @@ router.post('/API/petbnb/addAccount', addAccount)
 router.get('/API/petbnb/getAccountList', getAccountList)
 router.get('/API/petbnb/article/getArticleList',getArticleList)
 router.get('/API/petbnb/article/getArticleDetail',getArticleDetail)
+router.get('/API/petbnb/getPetDetail',getPetDetail)
+router.post('/API/petbnb/updatePetDetail',updatePetDetail)
+
 
 
 module.exports = router; 

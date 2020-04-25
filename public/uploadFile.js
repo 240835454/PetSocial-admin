@@ -40,7 +40,7 @@ const uploadFile = ctx => {
                 }
             })
         })
-    })
+    }) 
 }
 
 const result = async ctx => {

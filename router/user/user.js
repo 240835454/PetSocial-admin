@@ -77,9 +77,10 @@ const myAlbum = async ctx => {
     res = res.sort(function (a, b) {
       return b.timestamp - a.timestamp;
     })
-    for (const i of res) {
+    for (const i of res) { 
       i.content = JSON.parse(i.content)
-      i.timestamp = formatTime.timeAgo(i.timestamp)
+      // i.timestamp = formatTime.timeAgo(i.timestamp)
+      i.timestamp = formatTime.getDate('yyyy-mm-dd',i.timestamp) 
       i.likeList = await community.getLikeList(i.post_id);
       i.comments = await community.getCommentsList(i.post_id);
     }
@@ -95,9 +96,27 @@ const myAlbum = async ctx => {
   })
 }
 
+// 获取我的点赞
+const myCollection = async ctx=> {
+  let token = ctx.header.authorization;
+  let account = verify.decode(token);
+  await user.myCollection(account).then(res=>{
+    ctx.body = {
+      code: 1,
+      data: {
+        list: [
+          ...res 
+        ]
+      } 
+    }
+  })
+}
+
 router.get('/API/User/userInfo', getUserInfo)
 router.post('/API/User/changeUserInfo', changeUserInfo)
 router.put('/API/User/changeAvatar', changeAvatar)
 router.get('/API/User/myAlbum', myAlbum)
+router.get('/API/User/myCollection', myCollection)
+
 
 module.exports = router;

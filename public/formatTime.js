@@ -2,24 +2,7 @@ class formatTime {
     constructor() {
 
     }
-    //转换年月日方法
-    getDate(format, str) {
-        var oDate = new Date(str),
-            oYear = oDate.getFullYear(),
-            oMonth = oDate.getMonth() + 1,
-            oDay = oDate.getDate(),
-            oHour = oDate.getHours(),
-            oMin = oDate.getMinutes(),
-            oSec = oDate.getSeconds();
-        let oTime = '';
-        if (format == 'yyyy-mm-dd') {
-            oTime = oYear + '-' + getzf(oMonth) + '-' + getzf(oDay) + ' ' + getzf(oHour) + ':' + getzf(oMin) + ':' + getzf(oSec); //最后拼接时间
-        } else if (format == 'yyyyMMddHHmm') {
-            // oTime = oYear +'/'+ getzf(oMonth) +'/'+ getzf(oDay) +' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSec);//最后拼接时间
-            oTime = oYear + '' + getzf(oMonth) + '' + getzf(oDay) + '' + getzf(oHour) + '' + getzf(oMin) + '' + getzf(oSec); //最后拼接时间
-        }
-        return oTime;
-    };
+
     //补0操作  
     getzf(num) {
         if (parseInt(num) < 10) {
@@ -28,6 +11,24 @@ class formatTime {
         return num;
     }
 
+    //转换年月日方法
+    getDate(format, str) {
+        var oDate = new Date(),
+            oYear = oDate.getFullYear(str),
+            oMonth = oDate.getMonth(str) + 1, 
+            oDay = oDate.getDate(str),
+            oHour = oDate.getHours(str),
+            oMin = oDate.getMinutes(str),
+            oSec = oDate.getSeconds(str);
+        let oTime = '';
+        if (format == 'yyyy-mm-dd') {
+            oTime = oYear + '-' + this.getzf(oMonth) + '-' + this.getzf(oDay) + ' ' + this.getzf(oHour) + ':' + this.getzf(oMin) + ':' + this.getzf(oSec); //最后拼接时间
+        } else if (format == 'yyyyMMddHHmm') {
+            // oTime = oYear +'/'+ getzf(oMonth) +'/'+ getzf(oDay) +' '+ getzf(oHour) +':'+ getzf(oMin) +':'+getzf(oSec);//最后拼接时间
+            oTime = oYear + '' + getzf(oMonth) + '' + getzf(oDay) + '' + getzf(oHour) + '' + getzf(oMin) + '' + getzf(oSec); //最后拼接时间
+        }
+        return oTime;
+    };
     timeAgo(dateTimeStamp) { //dateTimeStamp是一个时间毫秒，注意时间戳是秒的形式，在这个毫秒的基础上除以1000，就是十位数的时间戳。13位数的都是时间毫秒。
         var minute = 1000 * 60; //把分，时，天，周，半个月，一个月用毫秒表示
         var hour = minute * 60;

@@ -41,7 +41,7 @@ class User {
         let params = [path];
         let params2 = [path]; 
         let params3 = [path];
-        let params4 = [path]
+        let params4 = [path] 
         let p1 = con.update(sql, params).then(res => { })
         let p2 = con.update(sql2, params2).then(res => { })
         let p3 = con.update(sql3, params3).then(res => { })
@@ -53,6 +53,15 @@ class User {
         return new Promise((resolve, reject) => {
             let sql = "select * from dynamic where uid =" + account;
             con.select(sql).then(res=>{
+                resolve(res);
+            })
+        })
+    }
+    // 我的点赞
+    myCollection(uid){
+        return new Promise((resolve,reject) => {
+            let sql = `select * from likes where uid = ${uid} and post_uid != ${uid}`;
+            con.select(sql).then(res => {
                 resolve(res);
             })
         })

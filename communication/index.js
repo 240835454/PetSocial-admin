@@ -126,7 +126,7 @@ class Community {
     // 获取用户详情
     getUserDetail(uid) {
         return new Promise((resolve, reject) => {
-            let sql = "select * from user where phoneNumber=" + uid;
+            let sql = `select * from user where phoneNumber= ${uid}`;
             con.select(sql).then(res => {
                 resolve(res);
             })
@@ -136,7 +136,7 @@ class Community {
     // 获取用户动态列表
     getUserDynamic(uid) {
         return new Promise((resolve, reject) => {
-            let sql = "select * from dynamic where uid=" + uid; 
+            let sql = `select * from dynamic where uid = ${uid} ORDER BY timestamp DESC`; 
             con.select(sql).then(res => {
                 resolve(res);
             })
