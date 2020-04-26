@@ -142,6 +142,16 @@ class Community {
             })
         })
     }
+
+    // 获取用户动态详情
+    getUserDynamicDetail(post_id){
+        return new Promise((resolve,reject) => {
+            let sql = `select timestamp from dynamic where post_id=${post_id}`;
+            con.select(sql).then(res => {
+                resolve(res[0].timestamp);
+            })
+        })
+    }
 }
 
 

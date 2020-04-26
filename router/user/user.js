@@ -100,7 +100,10 @@ const myAlbum = async ctx => {
 const myCollection = async ctx=> {
   let token = ctx.header.authorization;
   let account = verify.decode(token);
-  await user.myCollection(account).then(res=>{
+  await user.myCollection(account).then(async res=>{
+    for(const i of res){
+      i.post_timestamp = await community.getUserDynamicDetail(i.post_id) 
+    }
     ctx.body = {
       code: 1,
       data: {

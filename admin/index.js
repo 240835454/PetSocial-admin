@@ -16,18 +16,18 @@ const static = require('koa-static')
 const path = require('path') 
 
 const router_login = require('../router/login/login');
-const router_petbnb = require('../router/petbnb/petbnb'); 
+const router_petbnb = require('../router/petbnb/petbnb');  
 const router_user = require('../router/user/user');
 const router_upload = require('../public/uploadFile');   
-const router_community = require('../router/communication/communication')  
+const router_community = require('../router/communication/communication')   
    
   
    
-       
+         
   
      
 // 错误处理            
-app.use((ctx, next) => {  
+app.use((ctx, next) => {   
   return next().catch((err) => { 
     if (err.status === 401) {   
       ctx.status = 401; 
